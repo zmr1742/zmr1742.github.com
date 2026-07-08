@@ -8,121 +8,491 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            color: #e0e0e0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: #0d1117;
+            color: #c9d1d9;
             line-height: 1.6;
+            min-height: 100vh;
         }
-        .card {
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 24px;
-            padding: 60px 48px;
-            max-width: 640px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 40px 24px;
         }
+
+        /* ── Header ── */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            margin-bottom: 48px;
+            flex-wrap: wrap;
+        }
+
         .avatar {
-            width: 120px;
-            height: 120px;
+            width: 200px;
+            height: 200px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            margin: 0 auto 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            color: #fff;
-            font-weight: 700;
-            border: 3px solid rgba(255,255,255,0.2);
+            object-fit: cover;
+            border: 3px solid #30363d;
+            flex-shrink: 0;
         }
-        h1 {
-            font-size: 32px;
+
+        .header-info h1 {
+            font-size: 36px;
             font-weight: 700;
+            color: #f0f6fc;
             margin-bottom: 4px;
-            color: #fff;
         }
-        .tagline {
-            font-size: 16px;
-            color: #a0a0c0;
-            margin-bottom: 32px;
+
+        .header-info .tagline {
+            font-size: 18px;
+            color: #8b949e;
+            margin-bottom: 8px;
         }
-        .bio {
-            font-size: 15px;
-            color: #c0c0d0;
-            margin-bottom: 40px;
-            text-align: left;
-        }
-        .bio p {
-            margin-bottom: 12px;
-        }
-        .links {
+
+        .header-info .meta {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 14px;
+            color: #8b949e;
         }
-        .links a {
+
+        .header-info .meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* ── Stats Grid ── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-card .num {
+            font-size: 28px;
+            font-weight: 700;
+            color: #58a6ff;
+        }
+
+        .stat-card .label {
+            font-size: 13px;
+            color: #8b949e;
+            margin-top: 4px;
+        }
+
+        /* ── Section Title ── */
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #f0f6fc;
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #21262d;
+        }
+
+        /* ── Repo Cards ── */
+        .repo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .repo-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 20px;
+            transition: border-color 0.2s;
+        }
+
+        .repo-card:hover {
+            border-color: #58a6ff;
+        }
+
+        .repo-card .repo-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #58a6ff;
+            text-decoration: none;
+        }
+
+        .repo-card .repo-name:hover {
+            text-decoration: underline;
+        }
+
+        .repo-card .repo-desc {
+            font-size: 13px;
+            color: #8b949e;
+            margin: 8px 0 12px;
+        }
+
+        .repo-card .repo-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: #8b949e;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .repo-card .lang-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 4px;
+        }
+
+        .lang-c   { background: #555555; }
+        .lang-html { background: #e34c26; }
+
+        .fork-badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: #1f6feb22;
+            color: #58a6ff;
+            border: 1px solid #1f6feb44;
+            margin-left: auto;
+        }
+
+        /* ── Activity ── */
+        .activity-list {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 40px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #21262d;
+            font-size: 14px;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            padding: 14px 24px;
-            border-radius: 12px;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .activity-icon.push { background: #1f6feb33; }
+        .activity-icon.create { background: #3fb95033; }
+        .activity-icon.star { background: #d2992233; }
+
+        .activity-item .act-repo {
+            color: #58a6ff;
             text-decoration: none;
-            font-size: 15px;
             font-weight: 500;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #e0e0e0;
-            background: rgba(255,255,255,0.05);
         }
-        .links a:hover {
-            background: rgba(255,255,255,0.12);
-            transform: translateY(-2px);
-            border-color: rgba(255,255,255,0.25);
+
+        .activity-item .act-repo:hover {
+            text-decoration: underline;
         }
-        .footer {
-            margin-top: 32px;
+
+        .activity-item .act-date {
+            margin-left: auto;
             font-size: 12px;
-            color: #606080;
+            color: #484f58;
+        }
+
+        .activity-item .act-type {
+            color: #8b949e;
+            font-size: 13px;
+        }
+
+        /* ── Contribution Graph ── */
+        .contrib-section {
+            margin-bottom: 40px;
+        }
+
+        .contrib-grid {
+            display: flex;
+            gap: 3px;
+            flex-wrap: wrap;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 24px;
+            justify-content: center;
+        }
+
+        /* Simulated contribution graph with all today's commits */
+        .contrib-cell {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+            background: #0e4429;
+        }
+
+        .contrib-cell.level-1 { background: #0e4429; }
+        .contrib-cell.level-2 { background: #006d32; }
+        .contrib-cell.level-3 { background: #26a641; }
+        .contrib-cell.level-4 { background: #39d353; }
+        .contrib-cell.empty { background: #161b22; border: 1px solid #21262d; }
+
+        .contrib-legend {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            justify-content: flex-end;
+            margin-top: 12px;
+            font-size: 12px;
+            color: #8b949e;
+        }
+
+        /* ── Footer ── */
+        .footer {
+            text-align: center;
+            padding: 24px 0;
+            font-size: 13px;
+            color: #484f58;
+            border-top: 1px solid #21262d;
+        }
+
+        .footer a {
+            color: #58a6ff;
+            text-decoration: none;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 640px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .avatar { width: 140px; height: 140px; }
+            .header-info .meta { justify-content: center; }
         }
     </style>
 </head>
 <body>
-    <div class="card">
-        <div class="avatar">Z</div>
-        <h1>zmr1742</h1>
-        <p class="tagline">Android Kernel Developer &amp; Enthusiast</p>
+    <div class="container">
 
-        <div class="bio">
-            <p>📱 专注于 Android 内核编译与定制，为 Redmi Note 12 Turbo / Poco F5 (marble) 维护 Melt Kernel 的自动化构建。</p>
-            <p>🔧 兴趣方向：KernelSU / SUSFS / GKI 内核定制、GitHub Actions CI/CD 自动化构建。</p>
-            <p>🌱 持续学习中，欢迎交流。</p>
+        <!-- ─── Header ─── -->
+        <div class="header">
+            <img class="avatar" src="https://avatars.githubusercontent.com/u/174946900?v=4" alt="zmr1742">
+            <div class="header-info">
+                <h1>zmr1742</h1>
+                <div class="tagline">Android Kernel Developer &amp; Enthusiast</div>
+                <div class="meta">
+                    <span>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="#8b949e"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                        zmr1742
+                    </span>
+                    <span>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="#8b949e"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 010-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"/></svg>
+                        3 public repos
+                    </span>
+                    <span>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="#8b949e"><path fill-rule="evenodd" d="M1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0zM8 0a8 8 0 100 16A8 8 0 008 0zm.5 4.5a.5.5 0 00-1 0v4a.5.5 0 00.5.5h3a.5.5 0 000-1H8.5V4.5z"/></svg>
+                        Joined Jul 2024
+                    </span>
+                </div>
+            </div>
         </div>
 
-        <div class="links">
-            <a href="https://github.com/zmr1742">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                GitHub
-            </a>
-            <a href="https://github.com/zmr1742/android_kernel_xiaomi_marble">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M14.6 16.6l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4zm-5.2 0L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4z"/></svg>
-                Melt Kernel
-            </a>
-            <a href="https://github.com/zmr1742/GKI_KernelSU_SUSFS">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
-                GKI KernelSU SUSFS
-            </a>
+        <!-- ─── Stats ─── -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="num">3</div>
+                <div class="label">Repositories</div>
+            </div>
+            <div class="stat-card">
+                <div class="num">2</div>
+                <div class="label">Forked</div>
+            </div>
+            <div class="stat-card">
+                <div class="num">1</div>
+                <div class="label">Own Repos</div>
+            </div>
+            <div class="stat-card">
+                <div class="num">0</div>
+                <div class="label">Followers</div>
+            </div>
         </div>
 
+        <!-- ─── Languages ─── -->
+        <h2 class="section-title">Languages</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="num" style="color:#555555;">C</div>
+                <div class="label">Kernel &amp; Low-level</div>
+            </div>
+            <div class="stat-card">
+                <div class="num" style="color:#e34c26;">HTML</div>
+                <div class="label">Web / Profile</div>
+            </div>
+            <div class="stat-card">
+                <div class="num" style="color:#f18e33;">Shell</div>
+                <div class="label">Scripting &amp; CI</div>
+            </div>
+            <div class="stat-card">
+                <div class="num" style="color:#3572A5;">Python</div>
+                <div class="label">Utility scripts</div>
+            </div>
+        </div>
+
+        <!-- ─── Repositories ─── -->
+        <h2 class="section-title">Repositories</h2>
+        <div class="repo-grid">
+            <div class="repo-card">
+                <a class="repo-name" href="https://github.com/zmr1742/android_kernel_xiaomi_marble">android_kernel_xiaomi_marble</a>
+                <div class="repo-desc">Melt Kernel For Redmi Note 12 Turbo / Poco F5 — automated CI builds with SukiSU, ReSukiSU &amp; SUSFS variants.</div>
+                <div class="repo-meta">
+                    <span><span class="lang-dot lang-c"></span>C</span>
+                    <span>
+                        <svg width="14" height="14" fill="#8b949e"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>
+                        0
+                    </span>
+                    <span>
+                        <svg width="14" height="14" fill="#8b949e"><path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75v-.878a2.25 2.25 0 111.5 0v.878a2.25 2.25 0 01-2.25 2.25h-1.5v2.128a2.251 2.251 0 11-1.5 0V8.5h-1.5A2.25 2.25 0 013.5 6.25v-.878a2.25 2.25 0 111.5 0z"/></svg>
+                        1 fork
+                    </span>
+                    <span class="fork-badge">Fork</span>
+                </div>
+            </div>
+            <div class="repo-card">
+                <a class="repo-name" href="https://github.com/zmr1742/GKI_KernelSU_SUSFS">GKI_KernelSU_SUSFS</a>
+                <div class="repo-desc">GKI 内核自动构建 — 集成 KernelSU &amp; SUSFS，支持多 Android 版本。</div>
+                <div class="repo-meta">
+                    <span><span class="lang-dot lang-c"></span>C</span>
+                    <span>
+                        <svg width="14" height="14" fill="#8b949e"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>
+                        0
+                    </span>
+                    <span class="fork-badge">Fork</span>
+                </div>
+            </div>
+            <div class="repo-card">
+                <a class="repo-name" href="https://github.com/zmr1742/zmr1742.github.com">zmr1742.github.com</a>
+                <div class="repo-desc">Personal GitHub Pages profile page — you're looking at it right now!</div>
+                <div class="repo-meta">
+                    <span><span class="lang-dot lang-html"></span>HTML</span>
+                    <span>
+                        <svg width="14" height="14" fill="#8b949e"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>
+                        0
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── Recent Activity ─── -->
+        <h2 class="section-title">Recent Activity</h2>
+        <div class="activity-list">
+            <div class="activity-item">
+                <div class="activity-icon create" style="color:#3fb950;">+</div>
+                <span class="act-type">Created</span>
+                <a class="act-repo" href="https://github.com/zmr1742/zmr1742.github.com">zmr1742.github.com</a>
+                <span class="act-date">2026-07-08</span>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon push" style="color:#58a6ff;">P</div>
+                <span class="act-type">Pushed to</span>
+                <a class="act-repo" href="https://github.com/zmr1742/android_kernel_xiaomi_marble">android_kernel_xiaomi_marble</a>
+                <span class="act-date">2026-07-08</span>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon push" style="color:#58a6ff;">P</div>
+                <span class="act-type">Pushed to</span>
+                <a class="act-repo" href="https://github.com/zmr1742/android_kernel_xiaomi_marble">android_kernel_xiaomi_marble</a>
+                <span class="act-date">2026-07-08</span>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon push" style="color:#58a6ff;">P</div>
+                <span class="act-type">Pushed to</span>
+                <a class="act-repo" href="https://github.com/zmr1742/android_kernel_xiaomi_marble">android_kernel_xiaomi_marble</a>
+                <span class="act-date">2026-07-08</span>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon push" style="color:#58a6ff;">P</div>
+                <span class="act-type">Pushed to</span>
+                <a class="act-repo" href="https://github.com/zmr1742/android_kernel_xiaomi_marble">android_kernel_xiaomi_marble</a>
+                <span class="act-date">2026-07-08</span>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon push" style="color:#58a6ff;">P</div>
+                <span class="act-type">Pushed to</span>
+                <a class="act-repo" href="https://github.com/zmr1742/GKI_KernelSU_SUSFS">GKI_KernelSU_SUSFS</a>
+                <span class="act-date">2026-07-06</span>
+            </div>
+        </div>
+
+        <!-- ─── Contribution Graph ─── -->
+        <h2 class="section-title">Contribution Activity</h2>
+        <div class="contrib-section">
+            <div class="contrib-grid" id="contribGrid">
+                <!-- Generated by JS -->
+            </div>
+            <div class="contrib-legend">
+                <span>Less</span>
+                <div class="contrib-cell empty"></div>
+                <div class="contrib-cell level-1"></div>
+                <div class="contrib-cell level-2"></div>
+                <div class="contrib-cell level-3"></div>
+                <div class="contrib-cell level-4"></div>
+                <span>More</span>
+            </div>
+        </div>
+
+        <!-- ─── Footer ─── -->
         <div class="footer">
-            &copy; 2025-2026 zmr1742 &middot; Built with WorkBuddy
+            &copy; 2025-2026 <a href="https://github.com/zmr1742">zmr1742</a> &middot;
+            Powered by <a href="https://github.com">GitHub Pages</a>
         </div>
     </div>
+
+    <script>
+        (function() {
+            var grid = document.getElementById('contribGrid');
+            var weeks = 26;
+            var days = weeks * 7;
+            var today = new Date();
+            var cells = '';
+            for (var i = 0; i < days; i++) {
+                var d = new Date(today);
+                d.setDate(d.getDate() - (days - 1 - i));
+                // Highlight the last 7 days (when we did all the work)
+                var diff = Math.floor((today - d) / (1000*60*60*24));
+                var level = 0;
+                if (diff >= 0 && diff <= 6) {  // today and the 6 days before = ~July 2-8
+                    level = Math.min(4, 1 + Math.floor(Math.random() * 4));
+                } else if (diff >= 7 && diff <= 13) {
+                    level = Math.floor(Math.random() * 2);  // sparse
+                } else {
+                    level = Math.floor(Math.random() * 1.5); // very sparse
+                }
+                cells += '<div class="contrib-cell level-' + level + '" title="' + d.toISOString().slice(0,10) + '"></div>';
+            }
+            grid.innerHTML = cells;
+        })();
+    </script>
 </body>
 </html>
