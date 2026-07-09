@@ -15,8 +15,8 @@
             --accent: #6c63ff; --accent-light: #8b83ff; --border: #e3e8f0;
             --hover: #f0f4fa; --shadow: rgba(0,0,0,0.06);
             --gradient-1: #4f8cff; --gradient-2: #a084e8; --gradient-3: #f7b267;
-            --glass-bg: rgba(255,255,255,0.55); --glass-border: rgba(255,255,255,0.35);
-            --glass-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            --glass-bg: rgba(255,255,255,0.65); --glass-border: rgba(255,255,255,0.4);
+            --glass-shadow: 0 4px 20px rgba(0,0,0,0.06);
         }
         [data-theme="dark"] {
             --bg: #0d1117; --card-bg: #161b22; --text: #f0f6fc; --subtext: #8b949e;
@@ -24,8 +24,8 @@
             --hover: #1c2333; --shadow: rgba(0,0,0,0.3);
             --gradient-1: #4f8cff; --gradient-2: #a084e8; --gradient-3: #f7b267;
             --quote-bg: #1c2333; --tag-bg: #21262d; --success: #2ecc71; --fail: #e74c3c;
-            --glass-bg: rgba(22,27,34,0.65); --glass-border: rgba(48,54,61,0.5);
-            --glass-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            --glass-bg: rgba(22,27,34,0.7); --glass-border: rgba(48,54,61,0.5);
+            --glass-shadow: 0 4px 20px rgba(0,0,0,0.25);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
@@ -35,6 +35,29 @@
             background: var(--bg); color: var(--text);
             min-height: 100vh; display: flex; justify-content: center;
             transition: background 0.3s; overflow-x: hidden;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background-image: var(--bg-img, none);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: background-image 1s ease;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: rgba(245,247,250,0.7);
+            backdrop-filter: blur(2px);
+        }
+        [data-theme="dark"] body::after {
+            background: rgba(13,17,23,0.75);
         }
         /* ─── Acrylic (Glassmorphism) Utility ─── */
         .glass {
@@ -451,6 +474,30 @@
         if (t && t[1] === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
         var l = document.cookie.match(/lang=([^;]+)/);
         if (l && l[1] === 'en') currentLang = 'en';
+    })();
+
+    // ─── Bing Wallpaper Background ───
+    (function() {
+        var bgUrl = localStorage.getItem('bingBg');
+        if (bgUrl) document.documentElement.style.setProperty('--bg-img', 'url(' + bgUrl + ')');
+        var cacheKey = 'bingBgDate';
+        var today = new Date().toISOString().slice(0, 10);
+        if (localStorage.getItem(cacheKey) !== today) {
+            fetch('https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=zh-CN')
+                .then(function(r) { return r.json(); })
+                .then(function(d) {
+                    var url = 'https://www.bing.com' + d.images[0].url;
+                    // Preload image before applying
+                    var img = new Image();
+                    img.onload = function() {
+                        document.documentElement.style.setProperty('--bg-img', 'url(' + url + ')');
+                        localStorage.setItem('bingBg', url);
+                        localStorage.setItem(cacheKey, today);
+                    };
+                    img.src = url;
+                })
+                .catch(function() {});
+        }
     })();
 
     function toggleTheme() {
