@@ -114,19 +114,30 @@
         .tool-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
         .tool-card h3 { font-size: 16px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
 
-        .ping-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        .ping-table th { text-align: left; padding: 8px 10px; color: var(--subtext); font-weight: 600; border-bottom: 1px solid var(--border); }
-        .ping-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
-        .ping-table tr:hover td { background: var(--hover); }
-        .ping-status { display: inline-flex; align-items: center; gap: 8px; }
-        .ping-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-        .ping-dot.ok { background: var(--success); }
-        .ping-dot.fail { background: var(--fail); }
-        .ping-dot.pending { background: var(--subtext); animation: blink 0.8s infinite; }
-        @keyframes blink { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
         .ping-btn { padding: 8px 20px; border: none; border-radius: 8px; background: var(--accent); color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
         .ping-btn:hover { opacity: 0.85; transform: translateY(-1px); }
         .ping-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .ping-grid { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; }
+        @media (max-width:640px) { .ping-grid { grid-template-columns: 1fr; } }
+        .ping-site-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+        .ping-site-card .ps-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-weight: 600; font-size: 14px; }
+        .ping-site-card .ps-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .ping-site-card .ps-dot.ok { background: var(--success); }
+        .ping-site-card .ps-dot.fail { background: var(--fail); }
+        .ping-site-card .ps-dot.pending { background: var(--subtext); animation: blink 0.8s infinite; }
+        @keyframes blink { 0%,100% { opacity:0.3; } 50% { opacity:1; } }
+        .ping-site-card .ps-stats { display: flex; gap: 12px; margin-bottom: 8px; font-size: 12px; color: var(--subtext); }
+        .ping-site-card .ps-stats span { display: flex; align-items: center; gap: 3px; }
+        .ping-site-card .ps-stats .num { font-weight: 700; font-size: 14px; color: var(--text); }
+        .ping-site-card .ps-stats .num.good { color: var(--success); }
+        .ping-site-card .ps-stats .num.mid { color: #f39c12; }
+        .ping-site-card .ps-stats .num.bad { color: var(--fail); }
+        .ping-bar-wrap { width: 100%; height: 24px; background: var(--bg); border-radius: 6px; position: relative; overflow: hidden; }
+        .ping-bar-fill { height: 100%; border-radius: 6px; transition: width 0.5s ease; min-width: 2px; position: relative; }
+        .ping-bar-fill.min { background: linear-gradient(90deg, var(--success), #2ecc71); }
+        .ping-bar-fill.avg { background: linear-gradient(90deg, #3498db, var(--accent)); }
+        .ping-bar-fill.max { background: linear-gradient(90deg, #f39c12, var(--fail)); }
+        .ping-bar-overlay { display: flex; justify-content: space-between; padding: 0 6px; position: absolute; top: 0; left: 0; right: 0; height: 100%; align-items: center; font-size: 10px; color: #fff; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
 
         .tool-input-group { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
         .tool-input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); font-size: 13px; outline: none; min-width: 150px; }
@@ -248,15 +259,12 @@
         <div class="tab-panel" id="tab-tools">
             <!-- Ping / Latency Test -->
             <div class="tool-card" style="margin-bottom:16px;">
-                <h3>📡 <span data-i18n="pingTitle">Website Latency Test</span></h3>
-                <div style="margin-bottom:12px;">
+                <h3>📡 <span data-i18n="pingTitle">Website Latency Test</span> <span style="font-size:12px;font-weight:400;color:var(--subtext);">(10 pings per site)</span></h3>
+                <div style="margin-bottom:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
                     <button class="ping-btn" id="pingBtn" onclick="runPing()"><span data-i18n="pingBtn">Ping All</span></button>
-                    <span id="pingStatus" style="margin-left:12px;font-size:12px;color:var(--subtext);"></span>
+                    <span id="pingProgress" style="font-size:12px;color:var(--subtext);"></span>
                 </div>
-                <table class="ping-table">
-                    <thead><tr><th><span data-i18n="pingSite">Site</span></th><th><span data-i18n="pingLatency">Latency</span></th><th><span data-i18n="pingStatus">Status</span></th></tr></thead>
-                    <tbody id="pingBody"></tbody>
-                </table>
+                <div class="ping-grid" id="pingGrid"></div>
             </div>
 
             <!-- IP Lookup -->
@@ -420,7 +428,7 @@
     }
     fetchQuote(); setInterval(fetchQuote, 120000);
 
-    // ─── Ping Tool ───
+    // ─── Ping Tool (10x per site, bar chart) ───
     var pingSites = [
         {name:'GitHub',     url:'https://github.com/favicon.ico', emoji:'🐙'},
         {name:'Google',     url:'https://www.google.com/favicon.ico', emoji:'🔍'},
@@ -429,79 +437,121 @@
         {name:'Baidu',      url:'https://www.baidu.com/favicon.ico', emoji:'🌐'},
         {name:'Bilibili',   url:'https://www.bilibili.com/favicon.ico', emoji:'📺'},
     ];
+    var PING_COUNT = 10, PING_TIMEOUT = 10000;
 
-    function initPingTable() {
-        var tb = document.getElementById('pingBody'); tb.innerHTML = '';
-        pingSites.forEach(function(site) {
-            var tr = document.createElement('tr');
-            tr.innerHTML = '<td>' + site.emoji + ' ' + site.name + '</td>' +
-                '<td><span class="ping-status"><span class="ping-dot pending"></span><span>—</span></span></td>' +
-                '<td>—</td>';
-            tr.id = 'ping-' + site.name.toLowerCase().replace(/\s/g,'');
-            tb.appendChild(tr);
+    function initPingCards() {
+        var g = document.getElementById('pingGrid'); g.innerHTML = '';
+        pingSites.forEach(function(s) {
+            var c = document.createElement('div');
+            c.className = 'ping-site-card'; c.id = 'pc-' + s.name.toLowerCase();
+            c.innerHTML =
+                '<div class="ps-header"><span class="ps-dot pending" id="pd-'+s.name.toLowerCase()+'"></span>'+s.emoji+' '+s.name+'</div>'+
+                '<div class="ps-stats">'+
+                    '<span>Min <span class="num" id="pmin-'+s.name.toLowerCase()+'">—</span> ms</span>'+
+                    '<span>Avg <span class="num" id="pavg-'+s.name.toLowerCase()+'">—</span> ms</span>'+
+                    '<span>Max <span class="num" id="pmax-'+s.name.toLowerCase()+'">—</span> ms</span>'+
+                    '<span style="margin-left:auto;font-size:11px;" id="pprog-'+s.name.toLowerCase()+'">0/'+PING_COUNT+'</span>'+
+                '</div>'+
+                '<div class="ping-bar-wrap"><div class="ping-bar-fill min" id="pbar-'+s.name.toLowerCase()+'" style="width:0%"></div><div class="ping-bar-overlay" id="pbarov-'+s.name.toLowerCase()+'"></div></div>';
+            g.appendChild(c);
         });
     }
-    initPingTable();
+    initPingCards();
 
-    function pingSite(site, callback) {
-        var tr = document.getElementById('ping-' + site.name.toLowerCase().replace(/\s/g,''));
-        var start = performance.now();
-        var img = new Image();
-        var timedOut = false;
-        var timer = setTimeout(function() {
-            timedOut = true;
-            tr.cells[0].innerHTML = site.emoji + ' ' + site.name;
-            tr.cells[1].innerHTML = '<span class="ping-status"><span class="ping-dot fail"></span><span>Timeout</span></span>';
-            tr.cells[2].innerHTML = '<span style="color:var(--fail)">✗</span>';
-            if (callback) callback();
-        }, 10000);
-        img.onload = function() {
-            if (timedOut) return;
-            clearTimeout(timer);
-            var elapsed = (performance.now() - start).toFixed(0);
-            tr.cells[0].innerHTML = site.emoji + ' ' + site.name;
-            tr.cells[1].innerHTML = '<span class="ping-status"><span class="ping-dot ok"></span><span>' + elapsed + ' ms</span></span>';
-            tr.cells[2].innerHTML = '<span style="color:var(--success)">✓</span>';
-            if (callback) callback();
-        };
-        img.onerror = function() {
-            if (timedOut) return;
-            clearTimeout(timer);
-            var elapsed = (performance.now() - start).toFixed(0);
-            tr.cells[0].innerHTML = site.emoji + ' ' + site.name;
-            tr.cells[1].innerHTML = '<span class="ping-status"><span class="ping-dot ok"></span><span>' + elapsed + ' ms</span></span>';
-            tr.cells[2].innerHTML = '<span style="color:var(--success)">✓</span>';
-            if (callback) callback();
-        };
-        img.src = site.url + '?t=' + Date.now();
+    function pingSiteOnce(site) {
+        return new Promise(function(resolve) {
+            var start = performance.now();
+            var img = new Image();
+            var done = false;
+            var timer = setTimeout(function() {
+                if (!done) { done = true; resolve(PING_TIMEOUT); }
+            }, PING_TIMEOUT);
+            var onFinish = function() {
+                if (done) return; done = true;
+                clearTimeout(timer);
+                resolve(performance.now() - start);
+            };
+            img.onload = onFinish;
+            img.onerror = onFinish;
+            img.src = site.url + '?t=' + Date.now() + Math.random();
+        });
     }
 
-    function runPing() {
+    async function runPing() {
         var btn = document.getElementById('pingBtn');
         btn.disabled = true;
-        var status = document.getElementById('pingStatus');
-        var dict = i18n[currentLang];
-        initPingTable();
-        var completed = 0;
-        pingSites.forEach(function(site) {
-            pingSite(site, function() {
-                completed++;
-                if (completed >= pingSites.length) {
-                    btn.disabled = false;
-                    status.textContent = dict.pingBtn + ' ✓';
-                }
-            });
-        });
+        document.getElementById('pingProgress').textContent = 'Running 10 pings per site...';
+
+        for (var si = 0; si < pingSites.length; si++) {
+            var s = pingSites[si];
+            var id = s.name.toLowerCase();
+            var latencies = [];
+
+            // Update dot to pending
+            document.getElementById('pd-' + id).className = 'ps-dot pending';
+
+            for (var pi = 0; pi < PING_COUNT; pi++) {
+                var ms = await pingSiteOnce(s);
+                latencies.push(ms);
+                document.getElementById('pprog-' + id).textContent = (pi+1) + '/' + PING_COUNT;
+                document.getElementById('pingProgress').textContent = s.emoji + ' ' + s.name + ' (' + (pi+1) + '/' + PING_COUNT + ')';
+            }
+
+            var valid = latencies.filter(function(v) { return v < PING_TIMEOUT; });
+            var min = valid.length > 0 ? Math.min.apply(null, valid) : PING_TIMEOUT;
+            var max = Math.max.apply(null, latencies);
+            var avg = latencies.reduce(function(a,b){return a+b;}, 0) / latencies.length;
+            var avgR = Math.round(avg);
+            var minR = Math.round(min);
+            var maxR = Math.round(max);
+
+            // Determine color class based on avg
+            var cls = 'good';
+            if (avg > 1000) cls = 'bad';
+            else if (avg > 300) cls = 'mid';
+
+            document.getElementById('pmin-' + id).textContent = minR;
+            document.getElementById('pmin-' + id).className = 'num ' + cls;
+            document.getElementById('pavg-' + id).textContent = avgR;
+            document.getElementById('pavg-' + id).className = 'num ' + cls;
+            document.getElementById('pmax-' + id).textContent = maxR;
+            document.getElementById('pmax-' + id).className = 'num ' + cls;
+            document.getElementById('pprog-' + id).textContent = '✓';
+
+            // Bar chart: use avg as the main bar, show min/max as markers
+            // Scale: max possible display = 5000ms, cap at 100%
+            var maxScale = 5000;
+            var minPct = Math.min(min / maxScale * 100, 100);
+            var avgPct = Math.min(avg / maxScale * 100, 100);
+            var maxPct = Math.min(max / maxScale * 100, 100);
+
+            var bar = document.getElementById('pbar-' + id);
+            bar.style.width = avgPct + '%';
+            bar.className = 'ping-bar-fill ' + (cls === 'bad' ? 'max' : cls === 'mid' ? 'avg' : 'min');
+
+            var ov = document.getElementById('pbarov-' + id);
+            ov.innerHTML = '<span>min ' + minR + 'ms</span><span>avg ' + avgR + 'ms</span><span>max ' + maxR + 'ms</span>';
+
+            // Also show mini bar for max as background
+            bar.style.opacity = '0.85';
+
+            document.getElementById('pd-' + id).className = 'ps-dot ' + (valid.length > 0 ? 'ok' : 'fail');
+        }
+
+        btn.disabled = false;
+        document.getElementById('pingProgress').textContent = '✓ All done. Click "Ping All" to retest.';
     }
 
-    // Auto-ping on tab switch to tools
+    // Auto-ping on first tools tab switch
     var toolsTab = document.getElementById('tab-tools');
+    var autoPing = true;
     var pingObserver = new MutationObserver(function() {
-        if (toolsTab.classList.contains('active') && document.getElementById('pingBody').children.length > 0) {
-            var firstRow = document.getElementById('pingBody').children[0];
-            if (firstRow && firstRow.cells[1].textContent.trim() === '—') {
-                runPing();
-            }
+        if (toolsTab.classList.contains('active') && autoPing) {
+            autoPing = false;
+            setTimeout(function() {
+                var firstProg = document.getElementById('pprog-' + pingSites[0].name.toLowerCase());
+                if (firstProg && firstProg.textContent.trim() === '0/' + PING_COUNT) runPing();
+            }, 500);
         }
     });
     pingObserver.observe(toolsTab, {attributes: true, attributeFilter: ['class']});
