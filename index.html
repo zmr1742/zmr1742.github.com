@@ -486,32 +486,57 @@
         });
     }
 
-    async function runPing() {
+    function runPing() {
         var btn = document.getElementById('pingBtn');
         btn.disabled = true;
-        document.getElementById('pingProgress').textContent = 'Running 10 pings per site...';
+        var totalPings = pingSites.length * PING_COUNT;
+        var completed = 0;
+        document.getElementById('pingProgress').textContent = '0/' + totalPings + ' pings...';
 
-        for (var si = 0; si < pingSites.length; si++) {
-            var s = pingSites[si];
+        // Reset all sites
+        pingSites.forEach(function(s) {
             var id = s.name.toLowerCase();
-            var latencies = [];
-            var maxLatency = 5000;
-
             document.getElementById('pd-' + id).className = 'ps-dot pending';
+            document.getElementById('pbars-' + id).innerHTML = '';
+            document.getElementById('pmin-' + id).textContent = '—'; document.getElementById('pmin-' + id).className = 'num';
+            document.getElementById('pavg-' + id).textContent = '—'; document.getElementById('pavg-' + id).className = 'num';
+            document.getElementById('pmax-' + id).textContent = '—'; document.getElementById('pmax-' + id).className = 'num';
+            document.getElementById('pprog-' + id).textContent = '0/' + PING_COUNT;
+            s._latencies = [];
+            s._barIdx = 0;
+        });
 
-            for (var pi = 0; pi < PING_COUNT; pi++) {
-                var ms = await pingSiteOnce(s);
-                latencies.push(ms);
-                document.getElementById('pprog-' + id).textContent = (pi+1) + '/' + PING_COUNT;
-                document.getElementById('pingProgress').textContent = s.emoji + ' ' + s.name + ' (' + (pi+1) + '/' + PING_COUNT + ')';
-            }
+        function addBar(site, ms) {
+            var id = site.name.toLowerCase();
+            var latencies = site._latencies;
+            latencies.push(ms);
+            var bi = site._barIdx++;
 
+            // Determine maxScale from current max
+            var curMax = Math.max.apply(null, latencies);
+            var maxScale = Math.max(curMax, 500);
+            var pct = Math.min(ms / maxScale * 100, 100);
+            var level = Math.min(Math.floor(ms / 500), 10);
+
+            var container = document.getElementById('pbars-' + id);
+            var col = document.createElement('div');
+            col.className = 'pb-col';
+            col.innerHTML = '<div class="pb-bar lv' + level + '" style="height:0%"></div>' +
+                '<div class="pb-ms">' + Math.round(ms) + '</div>' +
+                '<div class="pb-label">#' + (bi+1) + '</div>';
+            container.appendChild(col);
+
+            // Pop this bar with a small delay so the DOM settles
+            var barEl = col.querySelector('.pb-bar');
+            setTimeout(function() {
+                barEl.style.height = pct + '%';
+            }, 20);
+
+            // Update stats for this site
             var valid = latencies.filter(function(v) { return v < PING_TIMEOUT; });
             var min = valid.length > 0 ? Math.min.apply(null, valid) : PING_TIMEOUT;
             var max = Math.max.apply(null, latencies);
             var avg = latencies.reduce(function(a,b){return a+b;}, 0) / latencies.length;
-
-            // Determine overall color class
             var cls = 'good';
             if (avg > 1000) cls = 'bad';
             else if (avg > 300) cls = 'mid';
@@ -522,37 +547,27 @@
             document.getElementById('pavg-' + id).className = 'num ' + cls;
             document.getElementById('pmax-' + id).textContent = Math.round(max);
             document.getElementById('pmax-' + id).className = 'num ' + cls;
-            document.getElementById('pprog-' + id).textContent = '\u2713';
+            document.getElementById('pprog-' + id).textContent = latencies.length + '/' + PING_COUNT;
 
-            // Render 10 individual bars with staggered animation
-            var barContainer = document.getElementById('pbars-' + id);
-            barContainer.innerHTML = '';
-            var maxScale = Math.max(max, 500);
-            var bars = [];
-            for (var bi = 0; bi < latencies.length; bi++) {
-                var l = latencies[bi];
-                var pct = Math.min(l / maxScale * 100, 100);
-                var level = Math.min(Math.floor(l / 500), 10);
-                var col = document.createElement('div');
-                col.className = 'pb-col';
-                col.innerHTML = '<div class="pb-bar lv' + level + '" style="height:0%"></div>' +
-                    '<div class="pb-ms">' + Math.round(l) + '</div>' +
-                    '<div class="pb-label">#' + (bi+1) + '</div>';
-                barContainer.appendChild(col);
-                bars.push({el: col.querySelector('.pb-bar'), pct: pct});
+            if (latencies.length === PING_COUNT) {
+                document.getElementById('pd-' + id).className = 'ps-dot ' + (valid.length > 0 ? 'ok' : 'fail');
             }
-            // Staggered pop animation: each bar appears 60ms after the previous
-            bars.forEach(function(b, idx) {
-                setTimeout(function() {
-                    b.el.style.height = b.pct + '%';
-                }, idx * 100);
-            });
-
-            document.getElementById('pd-' + id).className = 'ps-dot ' + (valid.length > 0 ? 'ok' : 'fail');
         }
 
-        btn.disabled = false;
-        document.getElementById('pingProgress').textContent = '\u2713 All done. Click "Ping All" to retest.';
+        // Fire all pings in parallel
+        pingSites.forEach(function(site) {
+            for (var pi = 0; pi < PING_COUNT; pi++) {
+                pingSiteOnce(site).then(function(ms) {
+                    addBar(site, ms);
+                    completed++;
+                    document.getElementById('pingProgress').textContent = completed + '/' + totalPings + ' pings...';
+                    if (completed >= totalPings) {
+                        btn.disabled = false;
+                        document.getElementById('pingProgress').textContent = '\u2713 All done. Click "Ping All" to retest.';
+                    }
+                });
+            }
+        });
     }
 
     // Auto-ping on first tools tab switch
