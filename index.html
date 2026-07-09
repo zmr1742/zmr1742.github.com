@@ -526,11 +526,11 @@
                 '<div class="pb-label">#' + (bi+1) + '</div>';
             container.appendChild(col);
 
-            // Pop this bar with a small delay so the DOM settles
+            // Staggered pop: each arriving bar waits its turn
             var barEl = col.querySelector('.pb-bar');
             setTimeout(function() {
                 barEl.style.height = pct + '%';
-            }, 20);
+            }, bi * 120);
 
             // Update stats for this site
             var valid = latencies.filter(function(v) { return v < PING_TIMEOUT; });
