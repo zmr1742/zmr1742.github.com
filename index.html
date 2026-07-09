@@ -11,425 +11,144 @@
         @font-face { font-family: 'b'; src: local('Segoe UI'), local('Roboto'); font-display: swap; }
 
         :root {
-            --bg: #f5f7fa;
-            --card-bg: #ffffff;
-            --text: #222831;
-            --subtext: #6c757d;
-            --accent: #6c63ff;
-            --accent-light: #8b83ff;
-            --border: #e3e8f0;
-            --hover: #f0f4fa;
-            --shadow: rgba(0,0,0,0.06);
-            --gradient-1: #4f8cff;
-            --gradient-2: #a084e8;
-            --gradient-3: #f7b267;
-            --quote-bg: #eef2f7;
-            --tag-bg: #e8ecf3;
+            --bg: #f5f7fa; --card-bg: #ffffff; --text: #222831; --subtext: #6c757d;
+            --accent: #6c63ff; --accent-light: #8b83ff; --border: #e3e8f0;
+            --hover: #f0f4fa; --shadow: rgba(0,0,0,0.06);
+            --gradient-1: #4f8cff; --gradient-2: #a084e8; --gradient-3: #f7b267;
+            --quote-bg: #eef2f7; --tag-bg: #e8ecf3; --success: #2ecc71; --fail: #e74c3c;
         }
-
         [data-theme="dark"] {
-            --bg: #0d1117;
-            --card-bg: #161b22;
-            --text: #f0f6fc;
-            --subtext: #8b949e;
-            --accent: #747bff;
-            --accent-light: #989dff;
-            --border: #30363d;
-            --hover: #1c2333;
-            --shadow: rgba(0,0,0,0.3);
-            --gradient-1: #4f8cff;
-            --gradient-2: #a084e8;
-            --gradient-3: #f7b267;
-            --quote-bg: #1c2333;
-            --tag-bg: #21262d;
+            --bg: #0d1117; --card-bg: #161b22; --text: #f0f6fc; --subtext: #8b949e;
+            --accent: #747bff; --accent-light: #989dff; --border: #30363d;
+            --hover: #1c2333; --shadow: rgba(0,0,0,0.3);
+            --gradient-1: #4f8cff; --gradient-2: #a084e8; --gradient-3: #f7b267;
+            --quote-bg: #1c2333; --tag-bg: #21262d; --success: #2ecc71; --fail: #e74c3c;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         a { text-decoration: none; color: inherit; }
         body {
             font-family: 'b', 'a', -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            transition: background 0.3s;
-            overflow-x: hidden;
+            background: var(--bg); color: var(--text);
+            min-height: 100vh; display: flex; justify-content: center;
+            transition: background 0.3s; overflow-x: hidden;
         }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: var(--subtext); border-radius: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
 
-        .main {
-            width: 100%;
-            max-width: 1200px;
-            position: relative;
-            min-height: 100vh;
-        }
+        .main { width: 100%; max-width: 1200px; position: relative; min-height: 100vh; }
 
-        /* ─── Left Sidebar ─── */
-        .left {
-            width: 250px;
-            height: 100vh;
-            position: fixed;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 0 15px;
-            overflow-y: auto;
-        }
+        .left { width: 250px; height: 100vh; position: fixed; display: flex; flex-direction: column; align-items: center; padding: 0 15px; overflow-y: auto; }
         .left::-webkit-scrollbar { display: none; }
-        .left-inner {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 40px 0 20px;
-        }
-        .avatar {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--border);
-            margin-bottom: 16px;
-            transition: transform 0.6s ease;
-        }
+        .left-inner { width: 100%; display: flex; flex-direction: column; align-items: center; padding: 40px 0 20px; }
+        .avatar { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 3px solid var(--border); margin-bottom: 16px; transition: transform 0.6s ease; }
         .avatar:hover { transform: rotate(8deg) scale(1.05); }
         .left-name { font-size: 22px; font-weight: 700; text-align: center; }
         .left-tagline { font-size: 13px; color: var(--subtext); margin: 4px 0 16px; text-align: center; }
-
-        .left-card {
-            width: 100%;
-            background: var(--card-bg);
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 12px;
-            border: 1px solid var(--border);
-            transition: box-shadow 0.2s;
-        }
+        .left-card { width: 100%; background: var(--card-bg); border-radius: 14px; padding: 16px; margin-bottom: 12px; border: 1px solid var(--border); transition: box-shadow 0.2s; }
         .left-card:hover { box-shadow: 0 4px 20px var(--shadow); }
-
-        .left-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 8px;
-        }
-        .left-tags span {
-            padding: 4px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            background: var(--tag-bg);
-            color: var(--subtext);
-        }
-
+        .left-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+        .left-tags span { padding: 4px 12px; border-radius: 8px; font-size: 12px; background: var(--tag-bg); color: var(--subtext); }
         .timeline-title { font-size: 13px; font-weight: 600; margin-bottom: 10px; color: var(--subtext); }
-        .timeline {
-            list-style: none;
-            padding-left: 12px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
+        .timeline { list-style: none; padding-left: 12px; max-height: 200px; overflow-y: auto; }
         .timeline::-webkit-scrollbar { display: none; }
-        .timeline li {
-            position: relative;
-            padding: 8px 0 8px 16px;
-            border-left: 2px solid var(--accent);
-            font-size: 12px;
-            color: var(--subtext);
-        }
+        .timeline li { position: relative; padding: 8px 0 8px 16px; border-left: 2px solid var(--accent); font-size: 12px; color: var(--subtext); }
         .timeline li:last-child { border-left-color: #2ecc71; }
-        .timeline li::before {
-            content: '';
-            width: 10px; height: 10px;
-            border-radius: 50%;
-            background: var(--accent);
-            border: 2px solid var(--card-bg);
-            position: absolute;
-            left: -6px; top: 50%;
-            transform: translateY(-50%);
-        }
+        .timeline li::before { content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); border: 2px solid var(--card-bg); position: absolute; left: -6px; top: 50%; transform: translateY(-50%); }
         .timeline li:last-child::before { background: #2ecc71; animation: pulse 2s infinite; }
         .timeline .tl-date { font-size: 11px; color: var(--subtext); opacity: 0.7; }
 
-        /* ─── Right Content ─── */
-        .right {
-            width: calc(100% - 250px);
-            float: right;
-            padding: 40px 40px 40px 30px;
-            min-height: 100vh;
-        }
-
-        .welcome {
-            font-size: 48px;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-        .gradient-text {
-            background: linear-gradient(120deg, var(--gradient-1), var(--gradient-2) 40%, var(--gradient-3) 70%);
-            background-size: 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradientShift 5s ease-in-out infinite;
-        }
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0%; }
-            50% { background-position: 100%; }
-        }
-        .sub-text {
-            font-size: 18px;
-            color: var(--subtext);
-            margin-bottom: 8px;
-        }
+        .right { width: calc(100% - 250px); float: right; padding: 40px 40px 40px 30px; min-height: 100vh; }
+        .welcome { font-size: 48px; font-weight: 800; margin-bottom: 8px; }
+        .gradient-text { background: linear-gradient(120deg, var(--gradient-1), var(--gradient-2) 40%, var(--gradient-3) 70%); background-size: 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: gradientShift 5s ease-in-out infinite; }
+        @keyframes gradientShift { 0%, 100% { background-position: 0%; } 50% { background-position: 100%; } }
+        .sub-text { font-size: 18px; color: var(--subtext); margin-bottom: 8px; }
         .sub-text .highlight { color: var(--accent); font-weight: 700; }
 
-        /* Quote */
-        .quote-box {
-            background: var(--quote-bg);
-            border-radius: 12px;
-            padding: 16px 20px;
-            margin: 20px 0;
-            border-left: 4px solid var(--accent);
-            font-size: 14px;
-            font-style: italic;
-            color: var(--subtext);
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            position: relative;
-        }
+        .quote-box { background: var(--quote-bg); border-radius: 12px; padding: 16px 20px; margin: 20px 0; border-left: 4px solid var(--accent); font-size: 14px; font-style: italic; color: var(--subtext); min-height: 60px; display: flex; align-items: center; gap: 12px; }
         .quote-box .quote-mark { font-size: 28px; color: var(--accent); opacity: 0.4; line-height: 1; }
         .quote-box .quote-text { flex: 1; line-height: 1.5; }
         .quote-box .quote-from { font-size: 12px; opacity: 0.6; margin-top: 4px; }
 
-        /* Stats */
-        .stats {
-            display: flex;
-            gap: 12px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-        .stat-item {
-            flex: 1;
-            min-width: 100px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
-            text-align: center;
-        }
+        .stats { display: flex; gap: 12px; margin: 20px 0; flex-wrap: wrap; }
+        .stat-item { flex: 1; min-width: 100px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; }
         .stat-item .num { font-size: 26px; font-weight: 700; color: var(--accent); }
         .stat-item .label { font-size: 12px; color: var(--subtext); margin-top: 2px; }
 
-        /* Tab buttons */
-        .tab-bar {
-            display: flex;
-            gap: 8px;
-            margin: 24px 0;
-            padding: 6px;
-            background: var(--card-bg);
-            border-radius: 14px;
-            border: 1px solid var(--border);
-        }
-        .tab-btn {
-            flex: 1;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 10px;
-            background: transparent;
-            color: var(--subtext);
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
+        .tab-bar { display: flex; gap: 8px; margin: 24px 0; padding: 6px; background: var(--card-bg); border-radius: 14px; border: 1px solid var(--border); flex-wrap: wrap; }
+        .tab-btn { flex: 1; padding: 10px 20px; border: none; border-radius: 10px; background: transparent; color: var(--subtext); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; min-width: 80px; }
         .tab-btn:hover { background: var(--hover); color: var(--text); }
-        .tab-btn.active {
-            background: var(--accent);
-            color: #fff;
-        }
-
+        .tab-btn.active { background: var(--accent); color: #fff; }
         .tab-panel { display: none; animation: fadeUp 0.3s ease; }
         .tab-panel.active { display: block; }
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
-        .section-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin: 24px 0 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .project-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 12px;
-        }
-        .project-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 18px;
-            transition: all 0.2s;
-        }
-        .project-card:hover {
-            border-color: var(--accent);
-            box-shadow: 0 4px 16px var(--shadow);
-            transform: translateY(-2px);
-        }
-        .project-card .p-name {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--accent);
-            display: block;
-            margin-bottom: 6px;
-        }
+        .section-title { font-size: 20px; font-weight: 700; margin: 24px 0 16px; display: flex; align-items: center; gap: 8px; }
+        .project-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+        .project-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 18px; transition: all 0.2s; }
+        .project-card:hover { border-color: var(--accent); box-shadow: 0 4px 16px var(--shadow); transform: translateY(-2px); }
+        .project-card .p-name { font-size: 16px; font-weight: 600; color: var(--accent); display: block; margin-bottom: 6px; }
         .project-card .p-name:hover { text-decoration: underline; }
-        .project-card .p-desc {
-            font-size: 13px;
-            color: var(--subtext);
-            line-height: 1.5;
-        }
-        .project-card .p-meta {
-            display: flex;
-            gap: 14px;
-            margin-top: 12px;
-            font-size: 12px;
-            color: var(--subtext);
-        }
-        .project-card .fork-badge {
-            padding: 1px 8px;
-            border-radius: 8px;
-            background: var(--accent);
-            color: #fff;
-            font-size: 11px;
-            margin-left: auto;
-        }
+        .project-card .p-desc { font-size: 13px; color: var(--subtext); line-height: 1.5; }
+        .project-card .p-meta { display: flex; gap: 14px; margin-top: 12px; font-size: 12px; color: var(--subtext); }
+        .project-card .fork-badge { padding: 1px 8px; border-radius: 8px; background: var(--accent); color: #fff; font-size: 11px; margin-left: auto; }
 
-        .intro-section {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 24px;
-            line-height: 1.8;
-        }
+        .intro-section { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; line-height: 1.8; }
         .intro-section p { margin-bottom: 12px; color: var(--subtext); }
         .intro-section ul { padding-left: 20px; color: var(--subtext); margin-bottom: 12px; }
         .intro-section ul li { margin-bottom: 4px; }
 
-        .activity-list {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 4px 0;
-        }
-        .act-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 20px;
-            border-bottom: 1px solid var(--border);
-            font-size: 13px;
-        }
+        .activity-list { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 4px 0; }
+        .act-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid var(--border); font-size: 13px; }
         .act-item:last-child { border-bottom: none; }
-        .act-icon {
-            width: 28px; height: 28px;
-            border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 14px; font-weight: 700;
-            flex-shrink: 0;
-        }
+        .act-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
         .act-icon.push { background: #1f6feb33; color: #58a6ff; }
         .act-icon.create { background: #3fb95033; color: #3fb950; }
         .act-icon.star { background: #d2992233; color: #d29922; }
         .act-repo { color: var(--accent); font-weight: 500; }
         .act-date { margin-left: auto; font-size: 11px; color: var(--subtext); opacity: 0.6; }
 
-        /* Top-right controls */
-        .top-controls {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 100;
-            display: flex;
-            gap: 8px;
-        }
-        .ctrl-btn {
-            width: 44px; height: 44px;
-            border-radius: 50%;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s;
-            box-shadow: 0 2px 12px var(--shadow);
-            color: var(--text);
-        }
+        /* ─── Tools ─── */
+        .tool-grid { display: grid; gap: 16px; }
+        .tool-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+        .tool-card h3 { font-size: 16px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+
+        .ping-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .ping-table th { text-align: left; padding: 8px 10px; color: var(--subtext); font-weight: 600; border-bottom: 1px solid var(--border); }
+        .ping-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
+        .ping-table tr:hover td { background: var(--hover); }
+        .ping-status { display: inline-flex; align-items: center; gap: 8px; }
+        .ping-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .ping-dot.ok { background: var(--success); }
+        .ping-dot.fail { background: var(--fail); }
+        .ping-dot.pending { background: var(--subtext); animation: blink 0.8s infinite; }
+        @keyframes blink { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
+        .ping-btn { padding: 8px 20px; border: none; border-radius: 8px; background: var(--accent); color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .ping-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+        .ping-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .tool-input-group { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+        .tool-input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); font-size: 13px; outline: none; min-width: 150px; }
+        .tool-input:focus { border-color: var(--accent); }
+        .tool-output { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; font-size: 13px; font-family: monospace; min-height: 40px; word-break: break-all; color: var(--text); }
+        .ip-display { text-align: center; padding: 16px; }
+        .ip-display .ip-addr { font-size: 28px; font-weight: 700; color: var(--accent); font-family: monospace; }
+        .ip-display .ip-label { font-size: 12px; color: var(--subtext); margin-top: 4px; }
+
+        .top-controls { position: fixed; top: 20px; right: 20px; z-index: 100; display: flex; gap: 8px; }
+        .ctrl-btn { width: 44px; height: 44px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; transition: all 0.3s; box-shadow: 0 2px 12px var(--shadow); color: var(--text); }
         .ctrl-btn:hover { transform: scale(1.1); }
         .ctrl-btn.lang-btn { width: 52px; font-size: 13px; font-weight: 700; }
+        .menu-btn { display: none; position: fixed; bottom: 24px; right: 24px; z-index: 100; width: 52px; height: 52px; border-radius: 50%; background: var(--accent); color: #fff; border: none; font-size: 24px; cursor: pointer; box-shadow: 0 4px 16px rgba(108,99,255,0.4); }
 
-        .menu-btn {
-            display: none;
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 100;
-            width: 52px; height: 52px;
-            border-radius: 50%;
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 4px 16px rgba(108,99,255,0.4);
-        }
-
-        footer {
-            padding: 20px 0;
-            text-align: center;
-            font-size: 12px;
-            color: var(--subtext);
-            border-top: 1px solid var(--border);
-            margin-top: 40px;
-        }
+        footer { padding: 20px 0; text-align: center; font-size: 12px; color: var(--subtext); border-top: 1px solid var(--border); margin-top: 40px; }
         footer a { color: var(--accent); }
 
         @media (max-width: 800px) {
-            .left {
-                position: fixed;
-                z-index: 999;
-                width: 100%;
-                height: 100%;
-                pointer-events: none;
-                background: none;
-                padding: 0;
-                transition: all 0.3s;
-            }
-            .left.open {
-                pointer-events: auto;
-                background: rgba(0,0,0,0.5);
-            }
-            .left-inner {
-                position: absolute;
-                left: -70vw;
-                width: 70vw;
-                height: 100%;
-                padding: 20px;
-                background: var(--bg);
-                transition: left 0.25s ease-out;
-                overflow-y: auto;
-            }
+            .left { position: fixed; z-index: 999; width: 100%; height: 100%; pointer-events: none; background: none; padding: 0; transition: all 0.3s; }
+            .left.open { pointer-events: auto; background: rgba(0,0,0,0.5); }
+            .left-inner { position: absolute; left: -70vw; width: 70vw; height: 100%; padding: 20px; background: var(--bg); transition: left 0.25s ease-out; overflow-y: auto; }
             .left.open .left-inner { left: 0; }
             .right { width: 100%; padding: 24px 16px; }
             .welcome { font-size: 32px; }
@@ -439,6 +158,7 @@
             .top-controls { top: 12px; right: 12px; }
             .ctrl-btn { width: 38px; height: 38px; font-size: 14px; }
             .ctrl-btn.lang-btn { width: 44px; font-size: 12px; }
+            .tool-input-group { flex-direction: column; }
         }
     </style>
 </head>
@@ -451,69 +171,40 @@
 <button class="menu-btn" onclick="toggleSidebar()">☰</button>
 
 <div class="main">
-    <!-- Left Sidebar -->
     <div class="left" id="sidebar">
         <div class="left-inner">
             <img class="avatar" src="https://avatars.githubusercontent.com/u/174946900?v=4" alt="zmr1742">
             <div class="left-name">zmr1742</div>
             <div class="left-tagline">📱 <span data-i18n="sideTagline">Android Kernel Developer</span></div>
-
             <div class="left-card">
                 <div style="font-size:13px;color:var(--subtext);margin-bottom:8px;">📍 <span data-i18n="sideLocation">Location</span></div>
                 <div style="font-size:14px;" data-i18n="sideLocationVal">Yunnan, China</div>
             </div>
-
             <div class="left-card">
                 <div style="font-size:13px;font-weight:600;margin-bottom:8px;">🏷️ <span data-i18n="sideTags">Tags</span></div>
-                <div class="left-tags">
-                    <span>Kernel Dev</span>
-                    <span>Android</span>
-                    <span>KernelSU</span>
-                    <span>SUSFS</span>
-                    <span>CI/CD</span>
-                    <span>GitHub Actions</span>
-                </div>
+                <div class="left-tags"><span>Kernel Dev</span><span>Android</span><span>KernelSU</span><span>SUSFS</span><span>CI/CD</span><span>GitHub Actions</span></div>
             </div>
-
             <div class="left-card">
                 <div class="timeline-title">📅 <span data-i18n="sideTimeline">Timeline</span></div>
                 <ul class="timeline">
-                    <li>
-                        <div data-i18n="tlCreated">Created zmr1742.github.com</div>
-                        <div class="tl-date">Jul 8, 2026</div>
-                    </li>
-                    <li>
-                        <div data-i18n="tlMeltFix">Melt Kernel workflow fix (SUSFS boot hang)</div>
-                        <div class="tl-date">Jul 8, 2026</div>
-                    </li>
-                    <li>
-                        <div data-i18n="tlForked">Forked android_kernel_xiaomi_marble</div>
-                        <div class="tl-date">Jul 6, 2026</div>
-                    </li>
-                    <li>
-                        <div data-i18n="tlJoined">Joined GitHub</div>
-                        <div class="tl-date">Jul 7, 2024</div>
-                    </li>
+                    <li><div data-i18n="tlCreated">Created zmr1742.github.com</div><div class="tl-date">Jul 8, 2026</div></li>
+                    <li><div data-i18n="tlMeltFix">Melt Kernel workflow fix (SUSFS boot hang)</div><div class="tl-date">Jul 8, 2026</div></li>
+                    <li><div data-i18n="tlForked">Forked android_kernel_xiaomi_marble</div><div class="tl-date">Jul 6, 2026</div></li>
+                    <li><div data-i18n="tlJoined">Joined GitHub</div><div class="tl-date">Jul 7, 2024</div></li>
                 </ul>
             </div>
         </div>
     </div>
 
-    <!-- Right Content -->
     <div class="right">
         <div class="welcome"><span data-i18n="welcome">Hello, I'm</span> <span class="gradient-text">zmr1742</span></div>
         <div class="sub-text">👨‍💻 <span class="highlight"><span data-i18n="role">Android Kernel</span></span> <span data-i18n="roleSuffix">Developer &amp; Enthusiast</span></div>
 
-        <!-- Quote -->
         <div class="quote-box" id="quoteBox">
             <div class="quote-mark">"</div>
-            <div>
-                <div class="quote-text" id="quoteText"><span data-i18n="quoteLoading">Loading a random quote...</span></div>
-                <div class="quote-from" id="quoteFrom">— <span data-i18n="hitokoto">一言</span></div>
-            </div>
+            <div><div class="quote-text" id="quoteText"><span data-i18n="quoteLoading">Loading a random quote...</span></div><div class="quote-from" id="quoteFrom">— <span data-i18n="hitokoto">一言</span></div></div>
         </div>
 
-        <!-- Stats -->
         <div class="stats">
             <div class="stat-item"><div class="num">3</div><div class="label" data-i18n="statRepos">Repositories</div></div>
             <div class="stat-item"><div class="num">2</div><div class="label" data-i18n="statForked">Forked</div></div>
@@ -521,14 +212,14 @@
             <div class="stat-item"><div class="num">C</div><div class="label" data-i18n="statMainLang">Main Language</div></div>
         </div>
 
-        <!-- Tab Bar -->
         <div class="tab-bar">
             <button class="tab-btn active" onclick="switchTab('projects')">📂 <span data-i18n="tabProjects">Projects</span></button>
+            <button class="tab-btn" onclick="switchTab('tools')">🔧 <span data-i18n="tabTools">Tools</span></button>
             <button class="tab-btn" onclick="switchTab('about')">👤 <span data-i18n="tabAbout">About</span></button>
             <button class="tab-btn" onclick="switchTab('activity')">📊 <span data-i18n="tabActivity">Activity</span></button>
         </div>
 
-        <!-- Tab: Projects -->
+        <!-- ─── Projects Tab ─── -->
         <div class="tab-panel active" id="tab-projects">
             <div class="section-title">📦 <span data-i18n="secForked">Forked Repositories</span></div>
             <div class="project-list">
@@ -543,7 +234,6 @@
                     <div class="p-meta"><span>🔵 C</span><span>⭐ 0</span><span>⑂ 0 fork</span><span class="fork-badge">Fork</span></div>
                 </a>
             </div>
-
             <div class="section-title">🌐 <span data-i18n="secOwn">Own Repositories</span></div>
             <div class="project-list">
                 <a class="project-card" href="https://github.com/zmr1742/zmr1742.github.com" target="_blank">
@@ -554,12 +244,47 @@
             </div>
         </div>
 
-        <!-- Tab: About -->
+        <!-- ─── Tools Tab ─── -->
+        <div class="tab-panel" id="tab-tools">
+            <!-- Ping / Latency Test -->
+            <div class="tool-card" style="margin-bottom:16px;">
+                <h3>📡 <span data-i18n="pingTitle">Website Latency Test</span></h3>
+                <div style="margin-bottom:12px;">
+                    <button class="ping-btn" id="pingBtn" onclick="runPing()"><span data-i18n="pingBtn">Ping All</span></button>
+                    <span id="pingStatus" style="margin-left:12px;font-size:12px;color:var(--subtext);"></span>
+                </div>
+                <table class="ping-table">
+                    <thead><tr><th><span data-i18n="pingSite">Site</span></th><th><span data-i18n="pingLatency">Latency</span></th><th><span data-i18n="pingStatus">Status</span></th></tr></thead>
+                    <tbody id="pingBody"></tbody>
+                </table>
+            </div>
+
+            <!-- IP Lookup -->
+            <div class="tool-card" style="margin-bottom:16px;">
+                <h3>🌐 <span data-i18n="ipTitle">My IP Address</span></h3>
+                <div class="ip-display">
+                    <div class="ip-addr" id="ipAddr">—</div>
+                    <div class="ip-label"><span data-i18n="ipDesc">Your current public IP address</span></div>
+                </div>
+            </div>
+
+            <!-- Base64 Encode/Decode -->
+            <div class="tool-card">
+                <h3>🔐 <span data-i18n="b64Title">Base64 Encode / Decode</span></h3>
+                <div class="tool-input-group">
+                    <input class="tool-input" id="b64Input" placeholder='<span data-i18n="b64Placeholder">Enter text to encode/decode...'></textarea>'>
+                    <button class="ping-btn" onclick="b64Encode()">Encode ▶</button>
+                    <button class="ping-btn" onclick="b64Decode()">◀ Decode</button>
+                </div>
+                <div class="tool-output" id="b64Output"></div>
+            </div>
+        </div>
+
+        <!-- ─── About Tab ─── -->
         <div class="tab-panel" id="tab-about">
             <div class="intro-section">
                 <p data-i18n="about1">Hi, I'm <strong>zmr1742</strong>, an Android kernel enthusiast based in Yunnan, China.</p>
                 <p data-i18n="about2">I focus on automated kernel compilation and customization for Xiaomi devices, specifically the Redmi Note 12 Turbo / Poco F5 (marble).</p>
-
                 <h3 style="margin:20px 0 10px;font-size:16px;">🔧 <span data-i18n="aboutWhat">What I Do</span></h3>
                 <ul>
                     <li data-i18n="aboutLi1">Android Kernel compilation &amp; customization</li>
@@ -567,20 +292,18 @@
                     <li data-i18n="aboutLi3">GitHub Actions CI/CD automation for kernel building</li>
                     <li data-i18n="aboutLi4">AnyKernel3 packaging for Magisk/KSU modules</li>
                 </ul>
-
                 <h3 style="margin:20px 0 10px;font-size:16px;">🎯 <span data-i18n="aboutInterest">Interests</span></h3>
                 <ul>
                     <li data-i18n="interest1">Linux kernel internals (especially VFS, filesystems)</li>
                     <li data-i18n="interest2">Android security &amp; root solutions</li>
                     <li data-i18n="interest3">Automation &amp; DevOps (GitHub Actions, CI/CD)</li>
                 </ul>
-
                 <h3 style="margin:20px 0 10px;font-size:16px;">🔗 <span data-i18n="aboutConnect">Connect</span></h3>
                 <p><a href="https://github.com/zmr1742" style="color:var(--accent);font-weight:600;">GitHub</a> • <a href="https://github.com/zmr1742/android_kernel_xiaomi_marble" style="color:var(--accent);font-weight:600;">Melt Kernel</a> • <a href="https://github.com/zmr1742/GKI_KernelSU_SUSFS" style="color:var(--accent);font-weight:600;">GKI KernelSU SUSFS</a></p>
             </div>
         </div>
 
-        <!-- Tab: Activity -->
+        <!-- ─── Activity Tab ─── -->
         <div class="tab-panel" id="tab-activity">
             <div class="activity-list">
                 <div class="act-item"><div class="act-icon create">+</div><span data-i18n="actCreated">Created </span><a class="act-repo" href="https://github.com/zmr1742/zmr1742.github.com">zmr1742.github.com</a><span class="act-date">Jul 8</span></div>
@@ -599,101 +322,44 @@
 </div>
 
 <script>
-    // ─── i18n Dictionary ───
     var i18n = {
         'zh': {
-            sideTagline: 'Android 内核开发者',
-            sideLocation: '位置',
-            sideLocationVal: '中国云南',
-            sideTags: '标签',
-            sideTimeline: '时间线',
-            tlCreated: '创建 zmr1742.github.com',
-            tlMeltFix: '修复 Melt Kernel 工作流 (SUSFS 卡开机)',
-            tlForked: 'Fork android_kernel_xiaomi_marble',
-            tlJoined: '加入 GitHub',
-            welcome: '你好，我是',
-            role: 'Android 内核',
-            roleSuffix: '开发者 & 爱好者',
-            quoteLoading: '正在加载名言...',
-            hitokoto: '一言',
-            statRepos: '仓库',
-            statForked: 'Fork 数',
-            statOwn: '自有仓库',
-            statMainLang: '主语言',
-            tabProjects: '项目',
-            tabAbout: '关于',
-            tabActivity: '动态',
-            secForked: 'Fork 仓库',
-            descMelt: 'Melt Kernel — 为 Redmi Note 12 Turbo / Poco F5 自动构建，集成 SukiSU & SUSFS',
-            descGKI: 'GKI 内核自动构建 — 集成 KernelSU & SUSFS，支持多 Android 版本',
-            secOwn: '自有仓库',
-            descProfile: 'GitHub Pages 个人主页 — 你现在看到的就是这个！',
-            about1: '嗨，我是 <strong>zmr1742</strong>，一名位于中国云南的 Android 内核爱好者。',
-            about2: '专注于为小米设备（特别是 Redmi Note 12 Turbo / Poco F5）进行自动化的内核编译与定制。',
-            aboutWhat: '我做什么',
-            aboutLi1: 'Android 内核编译与定制',
-            aboutLi2: 'KernelSU / SUSFS / GKI 内核集成',
-            aboutLi3: 'GitHub Actions CI/CD 自动化内核构建',
-            aboutLi4: 'AnyKernel3 刷机包打包 (Magisk/KSU)',
-            aboutInterest: '兴趣方向',
-            interest1: 'Linux 内核源码 (VFS、文件系统)',
-            interest2: 'Android 安全与 Root 方案',
-            interest3: '自动化与 DevOps (GitHub Actions)',
-            aboutConnect: '联系方式',
-            actCreated: '创建了 ',
-            actPushed: '推送至 ',
-            footerSource: '源码',
-            footerQuotes: '名言来自',
+            sideTagline:'Android 内核开发者', sideLocation:'位置', sideLocationVal:'中国云南', sideTags:'标签', sideTimeline:'时间线',
+            tlCreated:'创建 zmr1742.github.com', tlMeltFix:'修复 Melt Kernel 工作流 (SUSFS 卡开机)', tlForked:'Fork android_kernel_xiaomi_marble', tlJoined:'加入 GitHub',
+            welcome:'你好，我是', role:'Android 内核', roleSuffix:'开发者 & 爱好者', quoteLoading:'正在加载名言...', hitokoto:'一言',
+            statRepos:'仓库', statForked:'Fork 数', statOwn:'自有仓库', statMainLang:'主语言',
+            tabProjects:'项目', tabTools:'工具', tabAbout:'关于', tabActivity:'动态',
+            secForked:'Fork 仓库', descMelt:'Melt Kernel — 为 Redmi Note 12 Turbo / Poco F5 自动构建，集成 SukiSU & SUSFS',
+            descGKI:'GKI 内核自动构建 — 集成 KernelSU & SUSFS，支持多 Android 版本', secOwn:'自有仓库',
+            descProfile:'GitHub Pages 个人主页 — 你现在看到的就是这个！',
+            about1:'嗨，我是 <strong>zmr1742</strong>，一名位于中国云南的 Android 内核爱好者。', about2:'专注于为小米设备（特别是 Redmi Note 12 Turbo / Poco F5）进行自动化的内核编译与定制。',
+            aboutWhat:'我做什么', aboutLi1:'Android 内核编译与定制', aboutLi2:'KernelSU / SUSFS / GKI 内核集成', aboutLi3:'GitHub Actions CI/CD 自动化内核构建', aboutLi4:'AnyKernel3 刷机包打包 (Magisk/KSU)',
+            aboutInterest:'兴趣方向', interest1:'Linux 内核源码 (VFS、文件系统)', interest2:'Android 安全与 Root 方案', interest3:'自动化与 DevOps (GitHub Actions)', aboutConnect:'联系方式',
+            actCreated:'创建了 ', actPushed:'推送至 ', footerSource:'源码', footerQuotes:'名言来自',
+            pingTitle:'网站延迟测试', pingBtn:'全部测速', pingSite:'站点', pingLatency:'延迟', pingStatus:'状态',
+            ipTitle:'我的 IP 地址', ipDesc:'你当前的公网 IP 地址',
+            b64Title:'Base64 编码 / 解码', b64Placeholder:'输入要编码/解码的文本...',
         },
         'en': {
-            sideTagline: 'Android Kernel Developer',
-            sideLocation: 'Location',
-            sideLocationVal: 'Yunnan, China',
-            sideTags: 'Tags',
-            sideTimeline: 'Timeline',
-            tlCreated: 'Created zmr1742.github.com',
-            tlMeltFix: 'Melt Kernel workflow fix (SUSFS boot hang)',
-            tlForked: 'Forked android_kernel_xiaomi_marble',
-            tlJoined: 'Joined GitHub',
-            welcome: "Hello, I'm",
-            role: 'Android Kernel',
-            roleSuffix: "Developer & Enthusiast",
-            quoteLoading: 'Loading a random quote...',
-            hitokoto: 'Hitokoto',
-            statRepos: 'Repositories',
-            statForked: 'Forked',
-            statOwn: 'Own Repos',
-            statMainLang: 'Main Language',
-            tabProjects: 'Projects',
-            tabAbout: 'About',
-            tabActivity: 'Activity',
-            secForked: 'Forked Repositories',
-            descMelt: 'Melt Kernel For Redmi Note 12 Turbo / Poco F5 — automated CI builds with SukiSU & SUSFS',
-            descGKI: 'GKI kernel auto-build — integrated KernelSU & SUSFS, multi-Android version support',
-            secOwn: 'Own Repositories',
-            descProfile: "Personal GitHub Pages profile page — you're looking at it right now!",
-            about1: "Hi, I'm <strong>zmr1742</strong>, an Android kernel enthusiast based in Yunnan, China.",
-            about2: 'I focus on automated kernel compilation and customization for Xiaomi devices, specifically the Redmi Note 12 Turbo / Poco F5 (marble).',
-            aboutWhat: 'What I Do',
-            aboutLi1: 'Android Kernel compilation & customization',
-            aboutLi2: 'KernelSU / SUSFS / GKI kernel integration',
-            aboutLi3: 'GitHub Actions CI/CD automation for kernel building',
-            aboutLi4: 'AnyKernel3 packaging for Magisk/KSU modules',
-            aboutInterest: 'Interests',
-            interest1: 'Linux kernel internals (VFS, filesystems)',
-            interest2: 'Android security & root solutions',
-            interest3: 'Automation & DevOps (GitHub Actions, CI/CD)',
-            aboutConnect: 'Connect',
-            actCreated: 'Created ',
-            actPushed: 'Pushed to ',
-            footerSource: 'Source',
-            footerQuotes: 'Quotes by',
+            sideTagline:'Android Kernel Developer', sideLocation:'Location', sideLocationVal:'Yunnan, China', sideTags:'Tags', sideTimeline:'Timeline',
+            tlCreated:'Created zmr1742.github.com', tlMeltFix:'Melt Kernel workflow fix (SUSFS boot hang)', tlForked:'Forked android_kernel_xiaomi_marble', tlJoined:'Joined GitHub',
+            welcome:"Hello, I'm", role:'Android Kernel', roleSuffix:"Developer & Enthusiast", quoteLoading:'Loading a random quote...', hitokoto:'Hitokoto',
+            statRepos:'Repositories', statForked:'Forked', statOwn:'Own Repos', statMainLang:'Main Language',
+            tabProjects:'Projects', tabTools:'Tools', tabAbout:'About', tabActivity:'Activity',
+            secForked:'Forked Repositories', descMelt:'Melt Kernel For Redmi Note 12 Turbo / Poco F5 — automated CI builds with SukiSU & SUSFS',
+            descGKI:'GKI kernel auto-build — integrated KernelSU & SUSFS, multi-Android version support', secOwn:'Own Repositories',
+            descProfile:"Personal GitHub Pages profile page — you're looking at it right now!",
+            about1:"Hi, I'm <strong>zmr1742</strong>, an Android kernel enthusiast based in Yunnan, China.", about2:'I focus on automated kernel compilation and customization for Xiaomi devices, specifically the Redmi Note 12 Turbo / Poco F5 (marble).',
+            aboutWhat:'What I Do', aboutLi1:'Android Kernel compilation & customization', aboutLi2:'KernelSU / SUSFS / GKI kernel integration', aboutLi3:'GitHub Actions CI/CD automation for kernel building', aboutLi4:'AnyKernel3 packaging for Magisk/KSU modules',
+            aboutInterest:'Interests', interest1:'Linux kernel internals (VFS, filesystems)', interest2:'Android security & root solutions', interest3:'Automation & DevOps (GitHub Actions, CI/CD)', aboutConnect:'Connect',
+            actCreated:'Created ', actPushed:'Pushed to ', footerSource:'Source', footerQuotes:'Quotes by',
+            pingTitle:'Website Latency Test', pingBtn:'Ping All', pingSite:'Site', pingLatency:'Latency', pingStatus:'Status',
+            ipTitle:'My IP Address', ipDesc:'Your current public IP address',
+            b64Title:'Base64 Encode / Decode', b64Placeholder:'Enter text to encode/decode...',
         }
     };
-
     var currentLang = 'zh';
 
-    // ─── Theme ───
     (function() {
         var t = document.cookie.match(/theme=([^;]+)/);
         if (t && t[1] === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
@@ -704,18 +370,13 @@
     function toggleTheme() {
         var html = document.documentElement;
         var isDark = html.getAttribute('data-theme') === 'dark';
-        if (isDark) {
-            html.removeAttribute('data-theme');
-            document.cookie = 'theme=light;path=/;max-age=31536000';
-            document.getElementById('themeToggle').textContent = '🌙';
-        } else {
-            html.setAttribute('data-theme', 'dark');
-            document.cookie = 'theme=dark;path=/;max-age=31536000';
-            document.getElementById('themeToggle').textContent = '☀️';
-        }
+        html.setAttribute('data-theme', isDark ? '' : 'dark');
+        document.cookie = 'theme=' + (isDark ? 'light' : 'dark') + ';path=/;max-age=31536000';
+        document.getElementById('themeToggle').textContent = isDark ? '🌙' : '☀️';
+        if (!isDark) html.setAttribute('data-theme', 'dark');
+        else html.removeAttribute('data-theme');
     }
 
-    // ─── i18n ───
     function applyLang(lang) {
         currentLang = lang;
         document.cookie = 'lang=' + lang + ';path=/;max-age=31536000';
@@ -724,75 +385,144 @@
         var dict = i18n[lang];
         document.querySelectorAll('[data-i18n]').forEach(function(el) {
             var key = el.getAttribute('data-i18n');
-            if (dict[key] !== undefined) {
-                el.innerHTML = dict[key];
-            }
+            if (dict[key] !== undefined) el.innerHTML = dict[key];
         });
+        // Fix placeholder for input
+        var inp = document.getElementById('b64Input');
+        if (inp) inp.placeholder = dict['b64Placeholder'];
     }
-
-    function toggleLang() {
-        applyLang(currentLang === 'zh' ? 'en' : 'zh');
-    }
-
-    // Initialize language
+    function toggleLang() { applyLang(currentLang === 'zh' ? 'en' : 'zh'); }
     applyLang(currentLang);
 
-    // ─── Tab ───
     function switchTab(name) {
         document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
         document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
         document.getElementById('tab-' + name).classList.add('active');
-        document.querySelector('.tab-btn[onclick*="' + name + '"]').classList.add('active');
+        var btns = document.querySelectorAll('.tab-btn');
+        for (var i = 0; i < btns.length; i++) {
+            if (btns[i].getAttribute('onclick') && btns[i].getAttribute('onclick').indexOf(name) !== -1) {
+                btns[i].classList.add('active');
+            }
+        }
     }
 
-    // ─── Sidebar (mobile) ───
-    function toggleSidebar() {
-        document.getElementById('sidebar').classList.toggle('open');
-    }
-    document.getElementById('sidebar').addEventListener('click', function(e) {
-        if (e.target === this) this.classList.remove('open');
-    });
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+    document.getElementById('sidebar').addEventListener('click', function(e) { if (e.target === this) this.classList.remove('open'); });
 
-    // ─── Quote via 一言 API ───
+    // ─── Quote ───
     function fetchQuote() {
-        var texts = {
-            zh: [
-                { h: 'Stay hungry, stay foolish.', f: 'Steve Jobs' },
-                { h: '活着就是为了改变世界。', f: 'Steve Jobs' },
-                { h: '代码如诗，简洁为上。', f: 'Unknown' },
-                { h: 'Talk is cheap. Show me the code.', f: 'Linus Torvalds' },
-                { h: '做正确的事，等待结果自然发生。', f: 'Unknown' },
-                { h: '学而不思则罔，思而不学则殆。', f: '孔子' },
-                { h: '千里之行，始于足下。', f: '老子' },
-                { h: '实践是检验真理的唯一标准。', f: '邓小平' },
-            ],
-            en: [
-                { h: 'Stay hungry, stay foolish.', f: 'Steve Jobs' },
-                { h: 'The only way to do great work is to love what you do.', f: 'Steve Jobs' },
-                { h: 'Talk is cheap. Show me the code.', f: 'Linus Torvalds' },
-                { h: 'In software, the most beautiful code is the simplest code.', f: 'Unknown' },
-                { h: 'Simplicity is the ultimate sophistication.', f: 'Leonardo da Vinci' },
-                { h: 'If you can\'t explain it simply, you don\'t understand it well enough.', f: 'Albert Einstein' },
-            ]
-        };
-        var q = document.getElementById('quoteText');
-        var f = document.getElementById('quoteFrom');
-        var langParam = currentLang === 'zh' ? 'c=d&c=g&c=i' : 'c=en';
-        fetch('https://v1.hitokoto.cn/?' + langParam)
-            .then(function(r) { return r.json(); })
-            .then(function(d) {
-                q.textContent = d.hitokoto;
-                f.textContent = '— ' + (d.from_who || '') + (d.from ? '《' + d.from + '》' : '');
-            })
-            .catch(function() {
-                var pool = texts[currentLang] || texts.en;
-                var r = pool[Math.floor(Math.random() * pool.length)];
-                q.textContent = r.h;
-                f.textContent = '— ' + r.f;
-            });
+        var texts = { zh:[{h:'Stay hungry, stay foolish.',f:'Steve Jobs'},{h:'活着就是为了改变世界。',f:'Steve Jobs'},{h:'代码如诗，简洁为上。',f:'Unknown'},{h:'Talk is cheap. Show me the code.',f:'Linus Torvalds'},{h:'做正确的事，等待结果自然发生。',f:'Unknown'},{h:'学而不思则罔，思而不学则殆。',f:'孔子'},{h:'千里之行，始于足下。',f:'老子'},{h:'实践是检验真理的唯一标准。',f:'邓小平'}], en:[{h:'Stay hungry, stay foolish.',f:'Steve Jobs'},{h:'The only way to do great work is to love what you do.',f:'Steve Jobs'},{h:'Talk is cheap. Show me the code.',f:'Linus Torvalds'},{h:'In software, the most beautiful code is the simplest code.',f:'Unknown'},{h:'Simplicity is the ultimate sophistication.',f:'Leonardo da Vinci'},{h:'If you can\'t explain it simply, you don\'t understand it well enough.',f:'Albert Einstein'}]};
+        var q = document.getElementById('quoteText'), f = document.getElementById('quoteFrom');
+        fetch('https://v1.hitokoto.cn/?' + (currentLang === 'zh' ? 'c=d&c=g&c=i' : 'c=en'))
+            .then(function(r){return r.json();})
+            .then(function(d){q.textContent=d.hitokoto; f.textContent='— '+(d.from_who||'')+(d.from?'《'+d.from+'》':'');})
+            .catch(function(){var pool=texts[currentLang]||texts.en; var r=pool[Math.floor(Math.random()*pool.length)]; q.textContent=r.h; f.textContent='— '+r.f;});
     }
-    fetchQuote();
-    setInterval(fetchQuote, 120000);
+    fetchQuote(); setInterval(fetchQuote, 120000);
+
+    // ─── Ping Tool ───
+    var pingSites = [
+        {name:'GitHub',     url:'https://github.com/favicon.ico', emoji:'🐙'},
+        {name:'Google',     url:'https://www.google.com/favicon.ico', emoji:'🔍'},
+        {name:'Cloudflare', url:'https://www.cloudflare.com/favicon.ico', emoji:'☁️'},
+        {name:'Telegram',   url:'https://telegram.org/favicon.ico', emoji:'✈️'},
+        {name:'Baidu',      url:'https://www.baidu.com/favicon.ico', emoji:'🌐'},
+        {name:'Bilibili',   url:'https://www.bilibili.com/favicon.ico', emoji:'📺'},
+    ];
+
+    function initPingTable() {
+        var tb = document.getElementById('pingBody'); tb.innerHTML = '';
+        pingSites.forEach(function(site) {
+            var tr = document.createElement('tr');
+            tr.innerHTML = '<td>' + site.emoji + ' ' + site.name + '</td>' +
+                '<td><span class="ping-status"><span class="ping-dot pending"></span><span>—</span></span></td>' +
+                '<td>—</td>';
+            tr.id = 'ping-' + site.name.toLowerCase().replace(/\s/g,'');
+            tb.appendChild(tr);
+        });
+    }
+    initPingTable();
+
+    function pingSite(site, callback) {
+        var tr = document.getElementById('ping-' + site.name.toLowerCase().replace(/\s/g,''));
+        var start = performance.now();
+        var img = new Image();
+        var timedOut = false;
+        var timer = setTimeout(function() {
+            timedOut = true;
+            tr.cells[0].innerHTML = site.emoji + ' ' + site.name;
+            tr.cells[1].innerHTML = '<span class="ping-status"><span class="ping-dot fail"></span><span>Timeout</span></span>';
+            tr.cells[2].innerHTML = '<span style="color:var(--fail)">✗</span>';
+            if (callback) callback();
+        }, 10000);
+        img.onload = function() {
+            if (timedOut) return;
+            clearTimeout(timer);
+            var elapsed = (performance.now() - start).toFixed(0);
+            tr.cells[0].innerHTML = site.emoji + ' ' + site.name;
+            tr.cells[1].innerHTML = '<span class="ping-status"><span class="ping-dot ok"></span><span>' + elapsed + ' ms</span></span>';
+            tr.cells[2].innerHTML = '<span style="color:var(--success)">✓</span>';
+            if (callback) callback();
+        };
+        img.onerror = function() {
+            if (timedOut) return;
+            clearTimeout(timer);
+            var elapsed = (performance.now() - start).toFixed(0);
+            tr.cells[0].innerHTML = site.emoji + ' ' + site.name;
+            tr.cells[1].innerHTML = '<span class="ping-status"><span class="ping-dot ok"></span><span>' + elapsed + ' ms</span></span>';
+            tr.cells[2].innerHTML = '<span style="color:var(--success)">✓</span>';
+            if (callback) callback();
+        };
+        img.src = site.url + '?t=' + Date.now();
+    }
+
+    function runPing() {
+        var btn = document.getElementById('pingBtn');
+        btn.disabled = true;
+        var status = document.getElementById('pingStatus');
+        var dict = i18n[currentLang];
+        initPingTable();
+        var completed = 0;
+        pingSites.forEach(function(site) {
+            pingSite(site, function() {
+                completed++;
+                if (completed >= pingSites.length) {
+                    btn.disabled = false;
+                    status.textContent = dict.pingBtn + ' ✓';
+                }
+            });
+        });
+    }
+
+    // Auto-ping on tab switch to tools
+    var toolsTab = document.getElementById('tab-tools');
+    var pingObserver = new MutationObserver(function() {
+        if (toolsTab.classList.contains('active') && document.getElementById('pingBody').children.length > 0) {
+            var firstRow = document.getElementById('pingBody').children[0];
+            if (firstRow && firstRow.cells[1].textContent.trim() === '—') {
+                runPing();
+            }
+        }
+    });
+    pingObserver.observe(toolsTab, {attributes: true, attributeFilter: ['class']});
+
+    // ─── IP Lookup ───
+    fetch('https://api.ipify.org?format=json')
+        .then(function(r){return r.json();})
+        .then(function(d){document.getElementById('ipAddr').textContent=d.ip;})
+        .catch(function(){document.getElementById('ipAddr').textContent='Unable to fetch';});
+
+    // ─── Base64 ───
+    function b64Encode() {
+        var input = document.getElementById('b64Input').value;
+        try { document.getElementById('b64Output').textContent = btoa(input); }
+        catch(e) { document.getElementById('b64Output').textContent = 'Error: ' + e.message; }
+    }
+    function b64Decode() {
+        var input = document.getElementById('b64Input').value;
+        try { document.getElementById('b64Output').textContent = atob(input); }
+        catch(e) { document.getElementById('b64Output').textContent = 'Error: ' + e.message; }
+    }
 </script>
 </body>
 </html>
