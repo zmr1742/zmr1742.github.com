@@ -132,12 +132,21 @@
         .ping-site-card .ps-stats .num.good { color: var(--success); }
         .ping-site-card .ps-stats .num.mid { color: #f39c12; }
         .ping-site-card .ps-stats .num.bad { color: var(--fail); }
-        .ping-bar-wrap { width: 100%; height: 24px; background: var(--bg); border-radius: 6px; position: relative; overflow: hidden; }
-        .ping-bar-fill { height: 100%; border-radius: 6px; transition: width 0.5s ease; min-width: 2px; position: relative; }
-        .ping-bar-fill.min { background: linear-gradient(90deg, var(--success), #2ecc71); }
-        .ping-bar-fill.avg { background: linear-gradient(90deg, #3498db, var(--accent)); }
-        .ping-bar-fill.max { background: linear-gradient(90deg, #f39c12, var(--fail)); }
-        .ping-bar-overlay { display: flex; justify-content: space-between; padding: 0 6px; position: absolute; top: 0; left: 0; right: 0; height: 100%; align-items: center; font-size: 10px; color: #fff; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+        .ping-bars-10 { display: flex; gap: 3px; align-items: flex-end; height: 56px; margin: 8px 0 2px; padding: 0 2px; }
+        .ping-bars-10 .pb-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 1px; }
+        .ping-bars-10 .pb-col .pb-bar { width: 100%; border-radius: 3px 3px 0 0; min-height: 2px; transition: height 0.3s ease; }
+        .pb-bar.lv0 { background: #2ecc71; }
+        .pb-bar.lv1 { background: #27ae60; }
+        .pb-bar.lv2 { background: #58a6ff; }
+        .pb-bar.lv3 { background: #3498db; }
+        .pb-bar.lv4 { background: #f1c40f; }
+        .pb-bar.lv5 { background: #f39c12; }
+        .pb-bar.lv6 { background: #e67e22; }
+        .pb-bar.lv7 { background: #e74c3c; }
+        .pb-bar.lv8 { background: #c0392b; }
+        .pb-bar.lv9 { background: #8e44ad; }
+        .pb-bar.lv10 { background: #6c3483; }
+        .ping-bars-10 .pb-col .pb-label { font-size: 7px; color: var(--subtext); opacity: 0.5; line-height: 1; }
 
         .tool-input-group { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
         .tool-input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); font-size: 13px; outline: none; min-width: 150px; }
@@ -452,7 +461,7 @@
                     '<span>Max <span class="num" id="pmax-'+s.name.toLowerCase()+'">—</span> ms</span>'+
                     '<span style="margin-left:auto;font-size:11px;" id="pprog-'+s.name.toLowerCase()+'">0/'+PING_COUNT+'</span>'+
                 '</div>'+
-                '<div class="ping-bar-wrap"><div class="ping-bar-fill min" id="pbar-'+s.name.toLowerCase()+'" style="width:0%"></div><div class="ping-bar-overlay" id="pbarov-'+s.name.toLowerCase()+'"></div></div>';
+                '<div class="ping-bars-10" id="pbars-'+s.name.toLowerCase()+'"></div>';
             g.appendChild(c);
         });
     }
@@ -486,8 +495,8 @@
             var s = pingSites[si];
             var id = s.name.toLowerCase();
             var latencies = [];
+            var maxLatency = 5000;
 
-            // Update dot to pending
             document.getElementById('pd-' + id).className = 'ps-dot pending';
 
             for (var pi = 0; pi < PING_COUNT; pi++) {
@@ -501,45 +510,42 @@
             var min = valid.length > 0 ? Math.min.apply(null, valid) : PING_TIMEOUT;
             var max = Math.max.apply(null, latencies);
             var avg = latencies.reduce(function(a,b){return a+b;}, 0) / latencies.length;
-            var avgR = Math.round(avg);
-            var minR = Math.round(min);
-            var maxR = Math.round(max);
 
-            // Determine color class based on avg
+            // Determine overall color class
             var cls = 'good';
             if (avg > 1000) cls = 'bad';
             else if (avg > 300) cls = 'mid';
 
-            document.getElementById('pmin-' + id).textContent = minR;
+            document.getElementById('pmin-' + id).textContent = Math.round(min);
             document.getElementById('pmin-' + id).className = 'num ' + cls;
-            document.getElementById('pavg-' + id).textContent = avgR;
+            document.getElementById('pavg-' + id).textContent = Math.round(avg);
             document.getElementById('pavg-' + id).className = 'num ' + cls;
-            document.getElementById('pmax-' + id).textContent = maxR;
+            document.getElementById('pmax-' + id).textContent = Math.round(max);
             document.getElementById('pmax-' + id).className = 'num ' + cls;
-            document.getElementById('pprog-' + id).textContent = '✓';
+            document.getElementById('pprog-' + id).textContent = '\u2713';
 
-            // Bar chart: use avg as the main bar, show min/max as markers
-            // Scale: max possible display = 5000ms, cap at 100%
-            var maxScale = 5000;
-            var minPct = Math.min(min / maxScale * 100, 100);
-            var avgPct = Math.min(avg / maxScale * 100, 100);
-            var maxPct = Math.min(max / maxScale * 100, 100);
-
-            var bar = document.getElementById('pbar-' + id);
-            bar.style.width = avgPct + '%';
-            bar.className = 'ping-bar-fill ' + (cls === 'bad' ? 'max' : cls === 'mid' ? 'avg' : 'min');
-
-            var ov = document.getElementById('pbarov-' + id);
-            ov.innerHTML = '<span>min ' + minR + 'ms</span><span>avg ' + avgR + 'ms</span><span>max ' + maxR + 'ms</span>';
-
-            // Also show mini bar for max as background
-            bar.style.opacity = '0.85';
+            // Render 10 individual bars
+            var barContainer = document.getElementById('pbars-' + id);
+            barContainer.innerHTML = '';
+            var maxScale = Math.max(max, 500);
+            for (var bi = 0; bi < latencies.length; bi++) {
+                var l = latencies[bi];
+                var pct = Math.min(l / maxScale * 100, 100);
+                // Color level: 0=fast green, 10=slow purple
+                var level = Math.min(Math.floor(l / 500), 10);
+                var col = document.createElement('div');
+                col.className = 'pb-col';
+                col.innerHTML = '<div class="pb-bar lv' + level + '" style="height:' + pct + '%"></div>' +
+                    '<div class="pb-ms">' + Math.round(l) + '</div>' +
+                    '<div class="pb-label">#' + (bi+1) + '</div>';
+                barContainer.appendChild(col);
+            }
 
             document.getElementById('pd-' + id).className = 'ps-dot ' + (valid.length > 0 ? 'ok' : 'fail');
         }
 
         btn.disabled = false;
-        document.getElementById('pingProgress').textContent = '✓ All done. Click "Ping All" to retest.';
+        document.getElementById('pingProgress').textContent = '\u2713 All done. Click "Ping All" to retest.';
     }
 
     // Auto-ping on first tools tab switch
