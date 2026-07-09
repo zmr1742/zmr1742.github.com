@@ -28,7 +28,7 @@
             --glass-shadow: 0 4px 20px rgba(0,0,0,0.25);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; cursor: none; }
         a { text-decoration: none; color: inherit; }
         body {
             font-family: 'b', 'a', -apple-system, sans-serif;
@@ -59,6 +59,20 @@
         [data-theme="dark"] body::after {
             background: rgba(13,17,23,0.75);
         }
+
+        /* ─── Rotating Ring Background ─── */
+        .ring-bg { position: fixed; inset: 0; z-index: -2; pointer-events: none; overflow: hidden; opacity: 0.35; }
+        [data-theme="dark"] .ring-bg { opacity: 0.2; }
+        .ring-bg .ring { position: absolute; top: 50%; left: 50%; will-change: transform; }
+        .ring-bg .center-dot { position: absolute; top: 50%; left: 50%; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; opacity: 0.3; transform: translate(-50%,-50%); }
+
+        /* ─── Click Ripple ─── */
+        .ripple { position: fixed; border-radius: 50%; pointer-events: none; z-index: 99999; transform: scale(0); animation: rippleAnim 0.6s ease-out forwards; }
+        @keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
+
+        /* ─── Custom Cursor ─── */
+        .cursor-dot { position: fixed; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); pointer-events: none; z-index: 99999; transition: transform 0.1s, opacity 0.2s; transform: translate(-50%,-50%); }
+        .cursor-ring { position: fixed; width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--accent); pointer-events: none; z-index: 99998; transition: transform 0.15s ease-out, opacity 0.3s; transform: translate(-50%,-50%); opacity: 0.5; }
         /* ─── Acrylic (Glassmorphism) Utility ─── */
         .glass {
             background: var(--glass-bg);
@@ -268,6 +282,13 @@
     </style>
 </head>
 <body>
+
+<!-- ─── Rotating Ring Background ─── -->
+<div class="ring-bg" id="ringBg"><div class="center-dot"></div></div>
+
+<!-- ─── Custom Cursor ─── -->
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="cursor-dot" id="cursorDot"></div>
 
 <div class="top-controls">
     <button class="ctrl-btn lang-btn" id="langToggle" onclick="toggleLang()">中</button>
@@ -511,6 +532,79 @@
         }
     })();
 
+    // ─── Rotating Ring Animation ───
+    (function() {
+        var container = document.getElementById('ringBg');
+        if (!container) return;
+        var colors = ['#00d4ff','#ff6b6b','#ffd93d','#6bcb77','#a855f7','#f472b6','#38bdf8','#fb923c','#a3e635','#e879f9'];
+        var rings = [];
+        for (var ri = 0; ri < 8; ri++) {
+            var size = 60 + ri * 40;
+            var r = 60 + ri * 18.5;  // arc radius
+            var ang = Math.PI / 2;
+            var half = size / 2;
+            var cx = half, cy = half;
+            var startX = cx + r * Math.cos(ang);
+            var startY = cy - r * Math.sin(ang);
+            var endX = cx + r * Math.cos(Math.PI - ang);
+            var endY = cy - r * Math.sin(Math.PI - ang);
+            // SVG arc path for ~120deg arc
+            var d = 'M ' + startX.toFixed(2) + ' ' + startY.toFixed(2) + ' A ' + r.toFixed(1) + ' ' + r.toFixed(1) + ' 0 0 1 ' + endX.toFixed(2) + ' ' + endY.toFixed(2);
+            var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('width', size); svg.setAttribute('height', size);
+            svg.setAttribute('viewBox', '0 0 ' + size + ' ' + size);
+            var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('d', d);
+            path.setAttribute('fill', 'none');
+            path.setAttribute('stroke', colors[ri % colors.length]);
+            path.setAttribute('stroke-width', '4');
+            path.setAttribute('stroke-linecap', 'round');
+            path.setAttribute('opacity', '0.6');
+            path.style.filter = 'drop-shadow(0 0 6px ' + colors[ri % colors.length] + ')';
+            svg.appendChild(path);
+            var div = document.createElement('div');
+            div.className = 'ring';
+            div.appendChild(svg);
+            container.appendChild(div);
+            rings.push({el: div, angle: Math.random() * 360, speed: (Math.random() - 0.5) * 1.5});
+        }
+        function animateRings() {
+            for (var i = 0; i < rings.length; i++) {
+                rings[i].angle += rings[i].speed;
+                rings[i].el.style.transform = 'translate(-50%,-50%) rotate(' + rings[i].angle + 'deg)';
+            }
+            requestAnimationFrame(animateRings);
+        }
+        animateRings();
+    })();
+
+    // ─── Click Ripple Effect ───
+    document.addEventListener('click', function(e) {
+        var ripple = document.createElement('div');
+        ripple.className = 'ripple';
+        var size = Math.max(window.innerWidth, window.innerHeight) * 0.1;
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = (e.clientX - size / 2) + 'px';
+        ripple.style.top = (e.clientY - size / 2) + 'px';
+        ripple.style.background = 'radial-gradient(circle, var(--accent) 0%, transparent 70%)';
+        ripple.style.opacity = '0.35';
+        document.body.appendChild(ripple);
+        setTimeout(function() { ripple.remove(); }, 600);
+    });
+
+    // ─── Custom Cursor ───
+    var dot = document.getElementById('cursorDot');
+    var ring = document.getElementById('cursorRing');
+    var cursorVisible = false;
+    document.addEventListener('mouseenter', function() { cursorVisible = true; dot.style.opacity = '1'; ring.style.opacity = '1'; });
+    document.addEventListener('mouseleave', function() { cursorVisible = false; dot.style.opacity = '0'; ring.style.opacity = '0'; });
+    document.addEventListener('mousemove', function(e) {
+        dot.style.left = e.clientX + 'px'; dot.style.top = e.clientY + 'px';
+        ring.style.left = e.clientX + 'px'; ring.style.top = e.clientY + 'px';
+    });
+    document.addEventListener('mousedown', function() { dot.style.transform = 'translate(-50%,-50%) scale(0.6)'; ring.style.transform = 'translate(-50%,-50%) scale(0.8)'; ring.style.opacity = '0.8'; });
+    document.addEventListener('mouseup', function() { dot.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.opacity = '0.5'; });
+
     function toggleTheme() {
         var html = document.documentElement;
         var isDark = html.getAttribute('data-theme') === 'dark';
@@ -695,12 +789,12 @@
 
     // ─── Ping Tool (10x per site, bar chart) ───
     var pingSites = [
-        {name:'GitHub',     url:'https://github.com/favicon.ico', emoji:'🐙'},
-        {name:'Google',     url:'https://www.google.com/favicon.ico', emoji:'🔍'},
-        {name:'Cloudflare', url:'https://www.cloudflare.com/favicon.ico', emoji:'☁️'},
-        {name:'Telegram',   url:'https://telegram.org/favicon.ico', emoji:'✈️'},
-        {name:'Baidu',      url:'https://www.baidu.com/favicon.ico', emoji:'🌐'},
-        {name:'Bilibili',   url:'https://www.bilibili.com/favicon.ico', emoji:'📺'},
+        {name:'GitHub',     url:'https://github.com/favicon.ico', icon:'<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>'},
+        {name:'Google',     url:'https://www.google.com/favicon.ico', icon:'<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>'},
+        {name:'Cloudflare', url:'https://www.cloudflare.com/favicon.ico', icon:'<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M11.997 1.999c-1.289 0-2.617.316-3.797.978C3.974 5.753 2.764 10.356 4.365 14.17l7.632.001v-1.192H5.791c-.37 0-.503-.201-.376-.5.031-.08.078-.162.139-.245.399-.546.982-.886 1.869-.886h8.417c.3 0 .54-.208.54-.457 0-.017.019-.034.019-.051l.002-.002c.007-.072.018-.143.018-.216 0-.588-.455-1.066-1.065-1.066H7.664c-.3 0-.488-.235-.381-.527.037-.101.092-.204.163-.309.408-.6 1.123-.977 2.081-.977h7.859c.275 0 .531-.068.741-.182.088-.048.17-.104.243-.167l.005-.004c.394-.335.561-.817.561-1.275 0-.716-.57-1.349-1.395-1.349h-8.05c.244-.68.638-1.364 1.219-1.971.084-.089.17-.17.262-.247l.011-.01c.782-.675 1.719-1.003 2.802-1.003h6.847c.907 0 1.713-.631 1.713-1.405 0-.696-.636-1.272-1.474-1.364l-.495-.053Zm-5.6 11.09a.597.597 0 00-.016.154c0 .187.113.376.32.521h-3.34c-.326 0-.566.17-.572.395-.006.226.224.412.55.412h8.913c.247 0 .475-.107.635-.278a.508.508 0 00.137-.243c.04-.231-.11-.47-.434-.582-.07-.02-.142-.035-.214-.045.027-.059.044-.123.044-.19 0-.133-.072-.268-.206-.285.018-.059.03-.119.03-.181 0-.207-.125-.398-.34-.519a.94.94 0 00-.172-.072c-.114-.304-.4-.53-.795-.586h-7.68c-.367 0-.665-.18-.672-.402-.006-.222.282-.57.65-.57h7.843c.176 0 .346.036.5.1.043-.082.096-.159.161-.23.14-.153.326-.298.547-.4.153-.07.315-.118.482-.14l-.004-.002c-.172-.033-.35-.05-.531-.05H7.22c-1.039 0-1.88.77-1.88 1.719 0 .18.028.353.079.516-.43.195-.722.56-.722.98 0 .243.06.453.16.643.096.33.283.614.54.836z" fill="#F6821F"/></svg>'},
+        {name:'Telegram',   url:'https://telegram.org/favicon.ico', icon:'<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.127.087.497.087.497l-1.188 5.63c-.149.678-.592.84-1.202.522l-3.314-2.447-.19.184a.572.572 0 01-.71.053l-1.196-.78-1.494-.967c-.332-.22-.354-.587-.045-.866.15-.136.992-.775 1.54-1.198.17-.133.391-.29.575-.44.142-.115.16-.28.03-.448a96.7 96.7 0 00-.584-.733l-.147-.185c-.222-.28-.414-.518-.49-.608-.133-.141-.262-.248-.208-.51.054-.262.382-.368.658-.397.168-.018.538-.04 1.226-.09.424-.032.875-.06 1.35-.088.43-.026.868-.037 1.308-.031.36.006.595.138.663.29a.599.599 0 01-.092.326c-.107.146-.248.343-.364.466-.3.318-.57.6-.57.6l.006.004z"/></svg>'},
+        {name:'Baidu',      url:'https://www.baidu.com/favicon.ico', icon:'<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M4.256 12.063c.789 0 1.428-.64 1.428-1.428 0-.787-.64-1.427-1.428-1.427s-1.428.64-1.428 1.427c0 .789.64 1.428 1.428 1.428zm4.236-3.347c.92 0 1.666-.746 1.666-1.666 0-.92-.746-1.666-1.666-1.666-.92 0-1.666.746-1.666 1.666 0 .92.746 1.666 1.666 1.666zm3.392-2.585c.72 0 1.304-.583 1.304-1.303 0-.72-.584-1.304-1.304-1.304-.72 0-1.304.584-1.304 1.304 0 .72.584 1.303 1.304 1.303zm3.858 2.273c.842 0 1.524-.682 1.524-1.524 0-.842-.682-1.524-1.524-1.524-.842 0-1.524.682-1.524 1.524 0 .842.682 1.524 1.524 1.524zm.474 3.885c-.018-.08-.045-.156-.074-.232l.009-.002a3.147 3.147 0 00-.319-4.353c-1.177-1.042-2.84-1.357-4.423-.894l-.016.005c-.963.282-1.78.833-2.562 1.346-.293.194-.588.387-.896.554-.336.182-.684.275-1.032.286-.506.017-1.85.38-2.812 1.414-.74.796-.83 2.106-.19 3.157.042.069.087.135.133.199a1.99 1.99 0 00.158.2c.353.388.876.661 1.346.409.032-.018.063-.04.095-.058.563-.323 1.193-.697 1.49-1.287.064-.127.176-.436.308-.688.186-.356.416-.665.761-.822.548-.25 1.043-.02 1.454.45.287.328.517.722.746 1.115.176.3.35.6.572.86.495.58 1.168 1.02 1.987 1.146.674.103 1.534-.03 1.991-.565.241-.282.392-.637.375-1.009a1.64 1.64 0 00-.093-.44zm3.736 1.112c-1.11-1.13-2.737-1.057-3.888-.337l.008-.005c-.389.244-.724.545-.992.917l-.01.013c-.416.577-.543 1.257-.431 1.899.03.194.05.384.05.577 0 .358-.178.677-.45.895-.035.028-.07.05-.107.076-.805.455-.543 1.388-.456 1.85.185.987 1.19 1.912 2.002 1.293a.64.64 0 00.107-.095c.652-.618 1.196-1.368 1.356-2.356.043-.263.028-.523.008-.78-.012-.155-.023-.314-.023-.477 0-.546.254-1.048.677-1.388.225-.18.48-.313.753-.399.574-.18 1.058-.556 1.358-1.047.058-.096.181-.42.145-.534l-.003-.01c-.13-.4-.309-.604-.592-.887z" fill="#2932E1"/></svg>'},
+        {name:'Bilibili',   url:'https://www.bilibili.com/favicon.ico', icon:'<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18.223 3.086a1.25 1.25 0 010 1.768L17.08 5.996h1.17A3.75 3.75 0 0122 9.746v7.5a3.75 3.75 0 01-3.75 3.75H5.75A3.75 3.75 0 012 17.246v-7.5a3.75 3.75 0 013.75-3.75h1.166L5.775 4.855a1.25 1.25 0 111.767-1.768l2.652 2.651c.079.08.145.166.198.258h3.213c.053-.092.12-.18.199-.259l2.651-2.651a1.25 1.25 0 011.768 0zm.027 5.42H5.75a1.25 1.25 0 00-1.247 1.157l-.003.093v7.5c0 .66.51 1.2 1.157 1.247l.093.003h12.5a1.25 1.25 0 001.247-1.156l.003-.094v-7.5c0-.69-.56-1.25-1.25-1.25zm-10 2.5c.69 0 1.25.56 1.25 1.25v1.25a1.25 1.25 0 01-2.5 0v-1.25c0-.69.56-1.25 1.25-1.25zm7.5 0c.69 0 1.25.56 1.25 1.25v1.25a1.25 1.25 0 01-2.5 0v-1.25c0-.69.56-1.25 1.25-1.25z"/></svg>'},
     ];
     var PING_COUNT = 10, PING_TIMEOUT = 10000;
 
@@ -710,7 +804,7 @@
             var c = document.createElement('div');
             c.className = 'ping-site-card'; c.id = 'pc-' + s.name.toLowerCase();
             c.innerHTML =
-                '<div class="ps-header"><span class="ps-dot pending" id="pd-'+s.name.toLowerCase()+'"></span>'+s.emoji+' '+s.name+'</div>'+
+                '<div class="ps-header"><span class="ps-dot pending" id="pd-'+s.name.toLowerCase()+'"></span>'+s.icon+' <span style="margin-left:4px;">'+s.name+'</span></div>'+
                 '<div class="ps-stats">'+
                     '<span>Min <span class="num" id="pmin-'+s.name.toLowerCase()+'">—</span> ms</span>'+
                     '<span>Avg <span class="num" id="pavg-'+s.name.toLowerCase()+'">—</span> ms</span>'+
