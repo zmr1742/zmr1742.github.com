@@ -99,25 +99,45 @@
         .intro-section ul { padding-left: 20px; color: var(--subtext); margin-bottom: 12px; }
         .intro-section ul li { margin-bottom: 4px; }
 
-        /* ─── Articles ─── */
-        .article-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 14px; cursor: pointer; transition: all 0.2s; }
-        .article-card:hover { border-color: var(--accent); box-shadow: 0 4px 16px var(--shadow); transform: translateY(-2px); }
-        .article-card .a-title { font-size: 17px; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+        /* ─── Articles (Glassmorphism + Expandable) ─── */
+        .article-card {
+            background: rgba(255,255,255,0.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+        [data-theme="dark"] .article-card {
+            background: rgba(22,27,34,0.6);
+            border-color: rgba(48,54,61,0.5);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .article-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 8px 32px rgba(108,99,255,0.12);
+            transform: translateY(-3px);
+        }
+        .article-card .a-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+        .article-card .a-title { font-size: 17px; font-weight: 700; color: var(--accent); margin-bottom: 6px; flex: 1; }
+        .article-card .a-arrow { font-size: 14px; color: var(--subtext); transition: transform 0.3s ease; flex-shrink: 0; margin-top: 4px; }
+        .article-card.expanded .a-arrow { transform: rotate(180deg); }
         .article-card .a-meta { font-size: 12px; color: var(--subtext); margin-bottom: 8px; display: flex; gap: 12px; }
         .article-card .a-summary { font-size: 13px; color: var(--subtext); line-height: 1.6; }
         .article-card .a-tag { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 11px; background: var(--tag-bg); color: var(--subtext); }
-
-        .modal-overlay { position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
-        .modal-overlay.open { display: flex; }
-        .modal-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; max-width: 700px; width: 100%; max-height: 85vh; overflow-y: auto; padding: 32px; position: relative; animation: fadeUp 0.25s ease; }
-        .modal-close { position: absolute; top: 16px; right: 20px; width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--hover); color: var(--text); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
-        .modal-close:hover { background: var(--border); }
-        .modal-box h1 { font-size: 24px; margin-bottom: 8px; color: var(--text); }
-        .modal-box .m-meta { font-size: 13px; color: var(--subtext); margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); display: flex; gap: 16px; }
-        .modal-box .m-body { font-size: 15px; line-height: 1.8; color: var(--text); }
-        .modal-box .m-body p { margin-bottom: 14px; }
-        .modal-box .m-body code { background: var(--tag-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
-        .modal-box .m-body pre { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px; overflow-x: auto; font-size: 13px; margin-bottom: 14px; }
+        .article-card .a-body-wrap { max-height: 0; overflow: hidden; transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1); }
+        .article-card.expanded .a-body-wrap { max-height: 2000px; }
+        .article-card .a-body { font-size: 15px; line-height: 1.8; color: var(--text); padding-top: 16px; border-top: 1px solid var(--border); margin-top: 14px; }
+        .article-card .a-body p { margin-bottom: 14px; }
+        .article-card .a-body ul, .article-card .a-body ol { padding-left: 20px; margin-bottom: 14px; }
+        .article-card .a-body li { margin-bottom: 6px; }
+        .article-card .a-body code { background: var(--tag-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+        .article-card .a-body pre { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px; overflow-x: auto; font-size: 13px; margin-bottom: 14px; }
+        .article-card .a-body h3 { font-size: 17px; margin: 20px 0 10px; }
 
         .activity-list { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 4px 0; }
         .act-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid var(--border); font-size: 13px; }
@@ -365,16 +385,6 @@
     </div>
 </div>
 
-<!-- ─── Article Reader Modal ─── -->
-<div class="modal-overlay" id="articleModal" onclick="closeArticle(event)">
-    <div class="modal-box" onclick="event.stopPropagation()">
-        <button class="modal-close" onclick="closeArticle()">✕</button>
-        <h1 id="modalTitle"></h1>
-        <div class="m-meta"><span id="modalDate"></span><span id="modalTag"></span></div>
-        <div class="m-body" id="modalBody"></div>
-    </div>
-</div>
-
 <script>
     var i18n = {
         'zh': {
@@ -580,32 +590,17 @@
         items.forEach(function(a, i) {
             var card = document.createElement('div');
             card.className = 'article-card';
-            card.onclick = function() { openArticle(i); };
+            card.id = 'ac-' + i;
             card.innerHTML =
-                '<div class="a-title">' + a.title + '</div>' +
+                '<div class="a-header"><div class="a-title">' + a.title + '</div><div class="a-arrow">▾</div></div>' +
                 '<div class="a-meta"><span>' + a.date + '</span><span class="a-tag">' + a.tag + '</span></div>' +
-                '<div class="a-summary">' + a.summary + '</div>';
+                '<div class="a-summary">' + a.summary + '</div>' +
+                '<div class="a-body-wrap"><div class="a-body">' + a.body + '</div></div>';
+            card.onclick = function() {
+                this.classList.toggle('expanded');
+            };
             list.appendChild(card);
         });
-    }
-
-    function openArticle(index) {
-        var lang = currentLang;
-        var items = articles[lang] || articles.zh;
-        var a = items[index];
-        if (!a) return;
-        document.getElementById('modalTitle').textContent = a.title;
-        document.getElementById('modalDate').textContent = a.date;
-        document.getElementById('modalTag').textContent = a.tag;
-        document.getElementById('modalBody').innerHTML = a.body;
-        document.getElementById('articleModal').classList.add('open');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeArticle(e) {
-        if (e && e.target !== e.currentTarget && e.target.closest('.modal-box')) return;
-        document.getElementById('articleModal').classList.remove('open');
-        document.body.style.overflow = '';
     }
 
     // Re-render articles when language changes
