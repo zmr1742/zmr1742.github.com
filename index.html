@@ -134,7 +134,7 @@
         .ping-site-card .ps-stats .num.bad { color: var(--fail); }
         .ping-bars-10 { display: flex; gap: 3px; align-items: flex-end; height: 56px; margin: 8px 0 2px; padding: 0 2px; }
         .ping-bars-10 .pb-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 1px; }
-        .ping-bars-10 .pb-col .pb-bar { width: 100%; border-radius: 3px 3px 0 0; min-height: 2px; transition: height 0.3s ease; }
+        .ping-bars-10 .pb-col .pb-bar { width: 100%; border-radius: 3px 3px 0 0; min-height: 2px; height: 0%; transition: height 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .pb-bar.lv0 { background: #2ecc71; }
         .pb-bar.lv1 { background: #27ae60; }
         .pb-bar.lv2 { background: #58a6ff; }
@@ -524,22 +524,29 @@
             document.getElementById('pmax-' + id).className = 'num ' + cls;
             document.getElementById('pprog-' + id).textContent = '\u2713';
 
-            // Render 10 individual bars
+            // Render 10 individual bars with staggered animation
             var barContainer = document.getElementById('pbars-' + id);
             barContainer.innerHTML = '';
             var maxScale = Math.max(max, 500);
+            var bars = [];
             for (var bi = 0; bi < latencies.length; bi++) {
                 var l = latencies[bi];
                 var pct = Math.min(l / maxScale * 100, 100);
-                // Color level: 0=fast green, 10=slow purple
                 var level = Math.min(Math.floor(l / 500), 10);
                 var col = document.createElement('div');
                 col.className = 'pb-col';
-                col.innerHTML = '<div class="pb-bar lv' + level + '" style="height:' + pct + '%"></div>' +
+                col.innerHTML = '<div class="pb-bar lv' + level + '" style="height:0%"></div>' +
                     '<div class="pb-ms">' + Math.round(l) + '</div>' +
                     '<div class="pb-label">#' + (bi+1) + '</div>';
                 barContainer.appendChild(col);
+                bars.push({el: col.querySelector('.pb-bar'), pct: pct});
             }
+            // Staggered pop animation: each bar appears 60ms after the previous
+            bars.forEach(function(b, idx) {
+                setTimeout(function() {
+                    b.el.style.height = b.pct + '%';
+                }, idx * 60);
+            });
 
             document.getElementById('pd-' + id).className = 'ps-dot ' + (valid.length > 0 ? 'ok' : 'fail');
         }
