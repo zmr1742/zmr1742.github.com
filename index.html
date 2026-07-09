@@ -99,6 +99,26 @@
         .intro-section ul { padding-left: 20px; color: var(--subtext); margin-bottom: 12px; }
         .intro-section ul li { margin-bottom: 4px; }
 
+        /* ─── Articles ─── */
+        .article-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 14px; cursor: pointer; transition: all 0.2s; }
+        .article-card:hover { border-color: var(--accent); box-shadow: 0 4px 16px var(--shadow); transform: translateY(-2px); }
+        .article-card .a-title { font-size: 17px; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+        .article-card .a-meta { font-size: 12px; color: var(--subtext); margin-bottom: 8px; display: flex; gap: 12px; }
+        .article-card .a-summary { font-size: 13px; color: var(--subtext); line-height: 1.6; }
+        .article-card .a-tag { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 11px; background: var(--tag-bg); color: var(--subtext); }
+
+        .modal-overlay { position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
+        .modal-overlay.open { display: flex; }
+        .modal-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; max-width: 700px; width: 100%; max-height: 85vh; overflow-y: auto; padding: 32px; position: relative; animation: fadeUp 0.25s ease; }
+        .modal-close { position: absolute; top: 16px; right: 20px; width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--hover); color: var(--text); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+        .modal-close:hover { background: var(--border); }
+        .modal-box h1 { font-size: 24px; margin-bottom: 8px; color: var(--text); }
+        .modal-box .m-meta { font-size: 13px; color: var(--subtext); margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); display: flex; gap: 16px; }
+        .modal-box .m-body { font-size: 15px; line-height: 1.8; color: var(--text); }
+        .modal-box .m-body p { margin-bottom: 14px; }
+        .modal-box .m-body code { background: var(--tag-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+        .modal-box .m-body pre { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px; overflow-x: auto; font-size: 13px; margin-bottom: 14px; }
+
         .activity-list { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 4px 0; }
         .act-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid var(--border); font-size: 13px; }
         .act-item:last-child { border-bottom: none; }
@@ -234,6 +254,7 @@
 
         <div class="tab-bar">
             <button class="tab-btn active" onclick="switchTab('projects')">📂 <span data-i18n="tabProjects">Projects</span></button>
+            <button class="tab-btn" onclick="switchTab('articles')">📝 <span data-i18n="tabArticles">Articles</span></button>
             <button class="tab-btn" onclick="switchTab('tools')">🔧 <span data-i18n="tabTools">Tools</span></button>
             <button class="tab-btn" onclick="switchTab('about')">👤 <span data-i18n="tabAbout">About</span></button>
             <button class="tab-btn" onclick="switchTab('activity')">📊 <span data-i18n="tabActivity">Activity</span></button>
@@ -262,6 +283,12 @@
                     <div class="p-meta"><span>🟠 HTML</span><span>⭐ 0</span></div>
                 </a>
             </div>
+        </div>
+
+        <!-- ─── Articles Tab ─── -->
+        <div class="tab-panel" id="tab-articles">
+            <div class="section-title">📝 <span data-i18n="tabArticles">Articles</span></div>
+            <div id="articleList"></div>
         </div>
 
         <!-- ─── Tools Tab ─── -->
@@ -338,6 +365,16 @@
     </div>
 </div>
 
+<!-- ─── Article Reader Modal ─── -->
+<div class="modal-overlay" id="articleModal" onclick="closeArticle(event)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <button class="modal-close" onclick="closeArticle()">✕</button>
+        <h1 id="modalTitle"></h1>
+        <div class="m-meta"><span id="modalDate"></span><span id="modalTag"></span></div>
+        <div class="m-body" id="modalBody"></div>
+    </div>
+</div>
+
 <script>
     var i18n = {
         'zh': {
@@ -345,7 +382,7 @@
             tlCreated:'创建 zmr1742.github.com', tlMeltFix:'修复 Melt Kernel 工作流 (SUSFS 卡开机)', tlForked:'Fork android_kernel_xiaomi_marble', tlJoined:'加入 GitHub',
             welcome:'你好，我是', role:'Android 内核', roleSuffix:'开发者 & 爱好者', quoteLoading:'正在加载名言...', hitokoto:'一言',
             statRepos:'仓库', statForked:'Fork 数', statOwn:'自有仓库', statMainLang:'主语言',
-            tabProjects:'项目', tabTools:'工具', tabAbout:'关于', tabActivity:'动态',
+            tabProjects:'项目', tabArticles:'文章', tabTools:'工具', tabAbout:'关于', tabActivity:'动态',
             secForked:'Fork 仓库', descMelt:'Melt Kernel — 为 Redmi Note 12 Turbo / Poco F5 自动构建，集成 SukiSU & SUSFS',
             descGKI:'GKI 内核自动构建 — 集成 KernelSU & SUSFS，支持多 Android 版本', secOwn:'自有仓库',
             descProfile:'GitHub Pages 个人主页 — 你现在看到的就是这个！',
@@ -362,7 +399,7 @@
             tlCreated:'Created zmr1742.github.com', tlMeltFix:'Melt Kernel workflow fix (SUSFS boot hang)', tlForked:'Forked android_kernel_xiaomi_marble', tlJoined:'Joined GitHub',
             welcome:"Hello, I'm", role:'Android Kernel', roleSuffix:"Developer & Enthusiast", quoteLoading:'Loading a random quote...', hitokoto:'Hitokoto',
             statRepos:'Repositories', statForked:'Forked', statOwn:'Own Repos', statMainLang:'Main Language',
-            tabProjects:'Projects', tabTools:'Tools', tabAbout:'About', tabActivity:'Activity',
+            tabProjects:'Projects', tabArticles:'Articles', tabTools:'Tools', tabAbout:'About', tabActivity:'Activity',
             secForked:'Forked Repositories', descMelt:'Melt Kernel For Redmi Note 12 Turbo / Poco F5 — automated CI builds with SukiSU & SUSFS',
             descGKI:'GKI kernel auto-build — integrated KernelSU & SUSFS, multi-Android version support', secOwn:'Own Repositories',
             descProfile:"Personal GitHub Pages profile page — you're looking at it right now!",
@@ -436,6 +473,147 @@
             .catch(function(){var pool=texts[currentLang]||texts.en; var r=pool[Math.floor(Math.random()*pool.length)]; q.textContent=r.h; f.textContent='— '+r.f;});
     }
     fetchQuote(); setInterval(fetchQuote, 120000);
+
+    // ─── Articles ───
+    var articles = {
+        zh: [
+            {
+                title: '使用 GitHub Actions 自动构建 Melt Kernel',
+                date: '2026-07-08',
+                tag: 'CI/CD',
+                summary: '详细介绍如何为 Redmi Note 12 Turbo (marble) 搭建 GitHub Actions 自动内核编译流水线，集成 SukiSU、ReSukiSU 和 SUSFS 多种变体，并产出 AnyKernel3 刷机包。',
+                body: '<p>Melt Kernel 是一个基于 Pzqqt/Guxin12 源码的定制内核，适用于 Redmi Note 12 Turbo (marble) 和 Poco F5 (marblein)。本文记录我为其搭建 GitHub Actions 自动构建流水线的过程。</p>'+
+                    '<h3>工作流设计</h3>'+
+                    '<p>工作流采用矩阵构建策略（matrix strategy），同时构建三个变体：</p>'+
+                    '<ul><li><strong>SukiSU-Ultra-SUSFS</strong> — 使用 SukiSU 的 builtin 分支，内置 SUSFS 支持</li>'+
+                    '<li><strong>SukiSU-Ultra</strong> — 标准 SukiSU，无 SUSFS</li>'+
+                    '<li><strong>ReSukiSU</strong> — ReSukiSU 分支</li></ul>'+
+                    '<h3>关键环节</h3>'+
+                    '<p><strong>KSU 集成：</strong>通过 curl 拉取 SukiSU 的 setup.sh 脚本，自动克隆对应分支并创建内核符号链接。</p>'+
+                    '<p><strong>SUSFS 处理：</strong>builtin 分支自带 SUSFS Kconfig，只需拷贝头文件并启用配置选项，无需应用 VFS 层补丁（避免双重注册）。</p>'+
+                    '<p><strong>内核配置：</strong>使用 marble_defconfig 为基础，通过 scripts/config 启用 KSU、KPM、KALLSYMS、KPROBES 等必要选项。</p>'+
+                    '<p><strong>AK3 打包：</strong>编译产出 Image，用 7z 压缩为 Image.7z，再与预编译的 dtb 和 modules 一起打包为 AnyKernel3 格式的刷机包。</p>',
+            },
+            {
+                title: '修复 SUSFS 导致的内核卡开机问题',
+                date: '2026-07-08',
+                tag: 'Debug',
+                summary: '排查并修复 SukiSU-Ultra-SUSFS 变体刷入后卡在开机动画的问题，根因是 SUSFS 钩子双重注册导致 VFS 层冲突。',
+                body: '<p>在首次构建 SukiSU-Ultra-SUSFS 变体并刷入设备后，手机卡在开机动画无法进入系统。通过分析 GitHub Actions 构建日志和内核源码，定位到根因。</p>'+
+                    '<h3>问题分析</h3>'+
+                    '<p>SukiSU-Ultra 的 <code>builtin</code> 分支已将 SUSFS 完整地编译进 KSU 内核模块中，其 Kconfig 已包含 <code>CONFIG_KSU_SUSFS*</code> 全部选项。但原工作流在此基础上又应用了 simonpunk 的独立 SUSFS VFS 层补丁（<code>50_add_susfs_in_gki-*.patch</code>）。</p>'+
+                    '<p>这导致 SUSFS 钩子被双重注册：</p>'+
+                    '<ol><li>KSU 模块在运行时通过内部机制挂钩 VFS 函数</li>'+
+                    '<li>内核静态编译的 SUSFS 代码直接修改同一批 VFS 函数</li></ol>'+
+                    '<p>两者冲突 → 系统卡死在开机动画。</p>'+
+                    '<h3>修复方案</h3>'+
+                    '<p>移除独立的 SUSFS VFS 补丁步骤，仅在内核配置中启用 <code>CONFIG_KSU_SUSFS*</code> 相关选项。SUSFS 完全由 builtin 分支的 KSU 模块内部处理。</p>'+
+                    '<p>同时需要注意保留头文件拷贝步骤（<code>susfs.h</code>、<code>susfs_def.h</code>），因为 builtin 分支的 KSU 模块代码中 <code>#include &lt;linux/susfs.h&gt;</code>，缺失会导致编译失败。</p>',
+            },
+            {
+                title: 'GitHub Actions 内核构建的实用技巧',
+                date: '2026-07-09',
+                tag: 'Tips',
+                summary: '分享在 Melt Kernel 和 GKI KernelSU SUSFS 项目中积累的 GitHub Actions 内核构建经验与技巧。',
+                body: '<p>经过数十次内核构建的试错，总结以下实用技巧：</p>'+
+                    '<h3>1. 磁盘空间管理</h3>'+
+                    '<p>GitHub Runner 默认有约 14GB 可用空间，但内核编译 + 多个变体可能占满。建议在 workflow 开始时检查磁盘并清理：</p>'+
+                    '<pre>AVAIL=$(df --output=avail / | tail -1)\nif [ "$AVAIL" -lt 10485760 ]; then\n  sudo apt clean\n  docker system prune -af --volumes 2>/dev/null || true\nfi</pre>'+
+                    '<h3>2. 矩阵构建策略</h3>'+
+                    '<p>使用 <code>strategy.matrix</code> 可以同时构建多个内核变体，设置 <code>fail-fast: false</code> 避免一个变体失败影响其他变体。</p>'+
+                    '<h3>3. 避免 raw.githubusercontent.com 限流</h3>'+
+                    '<p>频繁从 raw.githubusercontent.com 拉取脚本可能触发 429 限流。如果遇到，可以在 workflow 中重试或使用 git clone 替代 curl。</p>'+
+                    '<h3>4. 产物命名</h3>'+
+                    '<p>使用 <code>actions/upload-artifact@v6</code> 上传构建产物时，通过 <code>name</code> 参数区分不同变体，避免覆盖。</p>'+
+                    '<h3>5. 内核版本管理</h3>'+
+                    '<p>在 <code>KBUILD_BUILD_TIMESTAMP</code> 和 <code>KBUILD_BUILD_USER</code> 环境变量中设定构建信息，确保每次构建有独立的版本标识。</p>',
+            },
+        ],
+        en: [
+            {
+                title: 'Automated Melt Kernel Builds with GitHub Actions',
+                date: '2026-07-08',
+                tag: 'CI/CD',
+                summary: 'A detailed guide on setting up GitHub Actions CI/CD for Melt Kernel on Redmi Note 12 Turbo (marble), integrating SukiSU, ReSukiSU and SUSFS variants.',
+                body: '<p>Melt Kernel is a custom kernel based on Pzqqt/Guxin12 source for Redmi Note 12 Turbo (marble) and Poco F5 (marblein). This article documents the GitHub Actions CI/CD pipeline setup.</p>'+
+                    '<h3>Workflow Design</h3>'+
+                    '<p>The workflow uses a matrix build strategy to build three variants simultaneously.</p>'+
+                    '<h3>Key Components</h3>'+
+                    '<p><strong>KSU Integration:</strong> Pull SukiSU setup script via curl, auto-clone the branch and create kernel symlink.</p>'+
+                    '<p><strong>SUSFS Handling:</strong> The builtin branch has SUSFS built into the KSU module. Only headers need to be copied, no VFS patches required.</p>'+
+                    '<p><strong>AK3 Packaging:</strong> Compress Image with 7z, bundle with pre-built dtb and modules into AnyKernel3 flashable zip.</p>',
+            },
+            {
+                title: 'Fixing SUSFS Boot Hang on Custom Kernels',
+                date: '2026-07-08',
+                tag: 'Debug',
+                summary: 'Debugging and fixing a boot hang issue caused by double SUSFS hook registration when using SukiSU-Ultra builtin branch.',
+                body: '<p>After flashing the first SukiSU-Ultra-SUSFS build, the device got stuck at the boot animation. Here\'s how the root cause was identified and fixed.</p>'+
+                    '<h3>Root Cause</h3>'+
+                    '<p>SukiSU-Ultra\'s <code>builtin</code> branch already compiles SUSFS into the KSU module. But the workflow also applied simonpunk\'s standalone SUSFS VFS patches, leading to <strong>double hook registration</strong>.</p>'+
+                    '<p>This caused conflicts between the runtime KSU hooks and the statically compiled VFS hooks → boot hang.</p>'+
+                    '<h3>Fix</h3>'+
+                    '<p>Remove the standalone VFS patch step. Keep only the header files (<code>susfs.h</code>) and enable <code>CONFIG_KSU_SUSFS*</code> kernel configs.</p>',
+            },
+            {
+                title: 'GitHub Actions Tips for Kernel Builders',
+                date: '2026-07-09',
+                tag: 'Tips',
+                summary: 'Practical tips and tricks learned from dozens of kernel builds on GitHub Actions, covering disk management, rate limits, and matrix strategies.',
+                body: '<p>After many trial-and-error kernel builds, here are the most useful tips:</p>'+
+                    '<h3>1. Disk Space</h3>'+
+                    '<p>Check and clean disk at the start of each workflow run to avoid out-of-space failures during kernel compilation.</p>'+
+                    '<h3>2. Matrix Builds</h3>'+
+                    '<p>Use <code>strategy.matrix</code> with <code>fail-fast: false</code> to build multiple variants without one failure stopping others.</p>'+
+                    '<h3>3. Rate Limits</h3>'+
+                    '<p>raw.githubusercontent.com can return HTTP 429 under heavy load. Add retry logic or use git clone instead of curl for critical scripts.</p>',
+            },
+        ]
+    };
+
+    function renderArticles() {
+        var list = document.getElementById('articleList');
+        if (!list) return;
+        var lang = currentLang;
+        var items = articles[lang] || articles.zh;
+        list.innerHTML = '';
+        items.forEach(function(a, i) {
+            var card = document.createElement('div');
+            card.className = 'article-card';
+            card.onclick = function() { openArticle(i); };
+            card.innerHTML =
+                '<div class="a-title">' + a.title + '</div>' +
+                '<div class="a-meta"><span>' + a.date + '</span><span class="a-tag">' + a.tag + '</span></div>' +
+                '<div class="a-summary">' + a.summary + '</div>';
+            list.appendChild(card);
+        });
+    }
+
+    function openArticle(index) {
+        var lang = currentLang;
+        var items = articles[lang] || articles.zh;
+        var a = items[index];
+        if (!a) return;
+        document.getElementById('modalTitle').textContent = a.title;
+        document.getElementById('modalDate').textContent = a.date;
+        document.getElementById('modalTag').textContent = a.tag;
+        document.getElementById('modalBody').innerHTML = a.body;
+        document.getElementById('articleModal').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeArticle(e) {
+        if (e && e.target !== e.currentTarget && e.target.closest('.modal-box')) return;
+        document.getElementById('articleModal').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    // Re-render articles when language changes
+    var origApplyLang = applyLang;
+    applyLang = function(lang) {
+        origApplyLang(lang);
+        renderArticles();
+    };
 
     // ─── Ping Tool (10x per site, bar chart) ───
     var pingSites = [
