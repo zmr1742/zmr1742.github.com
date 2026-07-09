@@ -28,7 +28,7 @@
             --glass-shadow: 0 4px 20px rgba(0,0,0,0.25);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; cursor: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; cursor: none !important; }
         a { text-decoration: none; color: inherit; }
         body {
             font-family: 'b', 'a', -apple-system, sans-serif;
@@ -71,8 +71,13 @@
         @keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
 
         /* ─── Custom Cursor ─── */
-        .cursor-dot { position: fixed; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); pointer-events: none; z-index: 99999; transition: transform 0.1s, opacity 0.2s; transform: translate(-50%,-50%); }
-        .cursor-ring { position: fixed; width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--accent); pointer-events: none; z-index: 99998; transition: transform 0.15s ease-out, opacity 0.3s; transform: translate(-50%,-50%); opacity: 0.5; }
+        .cursor-dot { position: fixed; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); pointer-events: none; z-index: 99999; transition: width 0.15s, height 0.15s, opacity 0.2s; transform: translate(-50%,-50%); }
+        .cursor-ring { position: fixed; width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--accent); pointer-events: none; z-index: 99998; transition: width 0.2s, height 0.2s, border-color 0.2s, opacity 0.3s; transform: translate(-50%,-50%); opacity: 0.5; }
+        .cursor-ring.hover { width: 52px; height: 52px; border-color: var(--accent-light); opacity: 0.7; background: rgba(108,99,255,0.06); }
+        .cursor-ring.text { width: 3px; height: 22px; border: none; border-radius: 2px; background: var(--accent); opacity: 0.8; }
+        .cursor-ring.hidden, .cursor-dot.hidden { opacity: 0 !important; }
+        .cursor-dot.click { width: 14px; height: 14px; }
+        .cursor-trail { position: fixed; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); pointer-events: none; z-index: 99997; opacity: 0; transition: opacity 0.5s; }
         /* ─── Acrylic (Glassmorphism) Utility ─── */
         .glass {
             background: var(--glass-bg);
@@ -593,17 +598,112 @@
     });
 
     // ─── Custom Cursor ───
-    var dot = document.getElementById('cursorDot');
-    var ring = document.getElementById('cursorRing');
-    var cursorVisible = false;
-    document.addEventListener('mouseenter', function() { cursorVisible = true; dot.style.opacity = '1'; ring.style.opacity = '1'; });
-    document.addEventListener('mouseleave', function() { cursorVisible = false; dot.style.opacity = '0'; ring.style.opacity = '0'; });
-    document.addEventListener('mousemove', function(e) {
-        dot.style.left = e.clientX + 'px'; dot.style.top = e.clientY + 'px';
-        ring.style.left = e.clientX + 'px'; ring.style.top = e.clientY + 'px';
-    });
-    document.addEventListener('mousedown', function() { dot.style.transform = 'translate(-50%,-50%) scale(0.6)'; ring.style.transform = 'translate(-50%,-50%) scale(0.8)'; ring.style.opacity = '0.8'; });
-    document.addEventListener('mouseup', function() { dot.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.opacity = '0.5'; });
+    (function() {
+        var dot = document.getElementById('cursorDot');
+        var ring = document.getElementById('cursorRing');
+        var trail = [];
+
+        // Detect touch device - hide cursor
+        if ('ontouchstart' in window) {
+            if (dot) dot.style.display = 'none';
+            if (ring) ring.style.display = 'none';
+            return;
+        }
+
+        // Create trail particles
+        for (var ti = 0; ti < 8; ti++) {
+            var t = document.createElement('div');
+            t.className = 'cursor-trail';
+            t.style.transitionDelay = (ti * 0.03) + 's';
+            document.body.appendChild(t);
+            trail.push(t);
+        }
+
+        var isHovering = false;
+        var isClicking = false;
+        var trailX = [], trailY = [];
+
+        function updateCursor(x, y) {
+            dot.style.left = x + 'px'; dot.style.top = y + 'px';
+            ring.style.left = x + 'px'; ring.style.top = y + 'px';
+
+            // Trail follows with delay
+            trailX.unshift(x); if (trailX.length > trail.length) trailX.pop();
+            trailY.unshift(y); if (trailY.length > trail.length) trailY.pop();
+            for (var ti = 0; ti < trail.length; ti++) {
+                if (trailX[ti] !== undefined) {
+                    trail[ti].style.left = trailX[ti] + 'px';
+                    trail[ti].style.top = trailY[ti] + 'px';
+                    trail[ti].style.opacity = '0.3';
+                }
+            }
+        }
+
+        document.addEventListener('mousemove', function(e) {
+            updateCursor(e.clientX, e.clientY);
+        });
+
+        document.addEventListener('mouseenter', function() {
+            dot.classList.remove('hidden');
+            ring.classList.remove('hidden');
+        });
+
+        document.addEventListener('mouseleave', function() {
+            dot.classList.add('hidden');
+            ring.classList.add('hidden');
+            trail.forEach(function(t) { t.style.opacity = '0'; });
+        });
+
+        // Detect hoverable elements using event delegation
+        function isClickable(el) {
+            if (!el) return false;
+            var tag = el.tagName.toLowerCase();
+            if (tag === 'a' || tag === 'button' || tag === 'input' || tag === 'select' || tag === 'textarea') return true;
+            if (el.getAttribute('onclick') || el.getAttribute('role') === 'button') return true;
+            var cursor = window.getComputedStyle(el).cursor;
+            if (cursor === 'pointer') return true;
+            return false;
+        }
+
+        function isTextInput(el) {
+            if (!el) return false;
+            var tag = el.tagName.toLowerCase();
+            if ((tag === 'input' && el.type !== 'button' && el.type !== 'checkbox' && el.type !== 'radio' && el.type !== 'submit') || tag === 'textarea') return true;
+            return false;
+        }
+
+        document.addEventListener('mouseover', function(e) {
+            var target = e.target;
+            if (isTextInput(target)) {
+                ring.className = 'cursor-ring text';
+                dot.style.opacity = '0';
+                isHovering = true;
+            } else if (isClickable(target)) {
+                ring.className = 'cursor-ring hover';
+                isHovering = true;
+            } else {
+                ring.className = 'cursor-ring';
+                dot.style.opacity = '1';
+                isHovering = false;
+            }
+        });
+
+        document.addEventListener('mousedown', function() {
+            dot.classList.add('click');
+            isClicking = true;
+        });
+
+        document.addEventListener('mouseup', function() {
+            dot.classList.remove('click');
+            isClicking = false;
+        });
+
+        // Listen for dynamically added elements (e.g. article cards)
+        var cursorObserver = new MutationObserver(function() {
+            // Re-check hover state on DOM changes
+        });
+        cursorObserver.observe(document.body, { childList: true, subtree: true });
+    })();
 
     function toggleTheme() {
         var html = document.documentElement;
