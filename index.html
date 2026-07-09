@@ -1,498 +1,700 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>zmr1742</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📱</text></svg>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        @font-face { font-family: 'a'; src: local('PingFang SC'), local('Microsoft YaHei'); font-display: swap; }
+        @font-face { font-family: 'b'; src: local('Segoe UI'), local('Roboto'); font-display: swap; }
+
+        :root {
+            --bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --text: #222831;
+            --subtext: #6c757d;
+            --accent: #6c63ff;
+            --accent-light: #8b83ff;
+            --border: #e3e8f0;
+            --hover: #f0f4fa;
+            --shadow: rgba(0,0,0,0.06);
+            --gradient-1: #4f8cff;
+            --gradient-2: #a084e8;
+            --gradient-3: #f7b267;
+            --quote-bg: #eef2f7;
+            --tag-bg: #e8ecf3;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0d1117;
+            --card-bg: #161b22;
+            --text: #f0f6fc;
+            --subtext: #8b949e;
+            --accent: #747bff;
+            --accent-light: #989dff;
+            --border: #30363d;
+            --hover: #1c2333;
+            --shadow: rgba(0,0,0,0.3);
+            --gradient-1: #4f8cff;
+            --gradient-2: #a084e8;
+            --gradient-3: #f7b267;
+            --quote-bg: #1c2333;
+            --tag-bg: #21262d;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        a { text-decoration: none; color: inherit; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: #0d1117;
-            color: #c9d1d9;
-            line-height: 1.6;
+            font-family: 'b', 'a', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            transition: background 0.3s;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: var(--subtext); border-radius: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+
+        .main {
+            width: 100%;
+            max-width: 1200px;
+            position: relative;
             min-height: 100vh;
         }
 
-        .container {
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 40px 24px;
-        }
-
-        /* ── Header ── */
-        .header {
+        /* ─── Left Sidebar ─── */
+        .left {
+            width: 250px;
+            height: 100vh;
+            position: fixed;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 32px;
-            margin-bottom: 48px;
-            flex-wrap: wrap;
+            padding: 0 15px;
+            overflow-y: auto;
         }
-
+        .left::-webkit-scrollbar { display: none; }
+        .left-inner {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 0 20px;
+        }
         .avatar {
-            width: 200px;
-            height: 200px;
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid #30363d;
-            flex-shrink: 0;
+            border: 3px solid var(--border);
+            margin-bottom: 16px;
+            transition: transform 0.6s ease;
+        }
+        .avatar:hover { transform: rotate(8deg) scale(1.05); }
+        .left-name { font-size: 22px; font-weight: 700; text-align: center; }
+        .left-tagline { font-size: 13px; color: var(--subtext); margin: 4px 0 16px; text-align: center; }
+
+        .left-card {
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            transition: box-shadow 0.2s;
+        }
+        .left-card:hover { box-shadow: 0 4px 20px var(--shadow); }
+
+        .left-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .left-tags span {
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            background: var(--tag-bg);
+            color: var(--subtext);
         }
 
-        .header-info h1 {
-            font-size: 36px;
-            font-weight: 700;
-            color: #f0f6fc;
-            margin-bottom: 4px;
+        .timeline-title { font-size: 13px; font-weight: 600; margin-bottom: 10px; color: var(--subtext); }
+        .timeline {
+            list-style: none;
+            padding-left: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .timeline::-webkit-scrollbar { display: none; }
+        .timeline li {
+            position: relative;
+            padding: 8px 0 8px 16px;
+            border-left: 2px solid var(--accent);
+            font-size: 12px;
+            color: var(--subtext);
+        }
+        .timeline li:last-child { border-left-color: #2ecc71; }
+        .timeline li::before {
+            content: '';
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 2px solid var(--card-bg);
+            position: absolute;
+            left: -6px; top: 50%;
+            transform: translateY(-50%);
+        }
+        .timeline li:last-child::before { background: #2ecc71; animation: pulse 2s infinite; }
+        .timeline .tl-date { font-size: 11px; color: var(--subtext); opacity: 0.7; }
+
+        /* ─── Right Content ─── */
+        .right {
+            width: calc(100% - 250px);
+            float: right;
+            padding: 40px 40px 40px 30px;
+            min-height: 100vh;
         }
 
-        .header-info .tagline {
-            font-size: 18px;
-            color: #8b949e;
+        /* Header */
+        .welcome {
+            font-size: 48px;
+            font-weight: 800;
             margin-bottom: 8px;
         }
+        .gradient-text {
+            background: linear-gradient(120deg, var(--gradient-1), var(--gradient-2) 40%, var(--gradient-3) 70%);
+            background-size: 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 5s ease-in-out infinite;
+        }
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0%; }
+            50% { background-position: 100%; }
+        }
+        .sub-text {
+            font-size: 18px;
+            color: var(--subtext);
+            margin-bottom: 8px;
+        }
+        .sub-text .highlight { color: var(--accent); font-weight: 700; }
 
-        .header-info .meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
+        /* Quote */
+        .quote-box {
+            background: var(--quote-bg);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 20px 0;
+            border-left: 4px solid var(--accent);
             font-size: 14px;
-            color: #8b949e;
-        }
-
-        .header-info .meta span {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        /* ── Stats Grid ── */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 40px;
-        }
-
-        .stat-card {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .stat-card .num {
-            font-size: 28px;
-            font-weight: 700;
-            color: #58a6ff;
-        }
-
-        .stat-card .label {
-            font-size: 13px;
-            color: #8b949e;
-            margin-top: 4px;
-        }
-
-        /* ── Section Title ── */
-        .section-title {
-            font-size: 22px;
-            font-weight: 600;
-            color: #f0f6fc;
-            margin-bottom: 20px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #21262d;
-        }
-
-        /* ── Repo Cards ── */
-        .repo-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 16px;
-            margin-bottom: 40px;
-        }
-
-        .repo-card {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 12px;
-            padding: 20px;
-            transition: border-color 0.2s;
-        }
-
-        .repo-card:hover {
-            border-color: #58a6ff;
-        }
-
-        .repo-card .repo-name {
-            font-size: 16px;
-            font-weight: 600;
-            color: #58a6ff;
-            text-decoration: none;
-        }
-
-        .repo-card .repo-name:hover {
-            text-decoration: underline;
-        }
-
-        .repo-card .repo-desc {
-            font-size: 13px;
-            color: #8b949e;
-            margin: 8px 0 12px;
-        }
-
-        .repo-card .repo-meta {
-            display: flex;
-            gap: 16px;
-            font-size: 12px;
-            color: #8b949e;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .repo-card .lang-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 4px;
-        }
-
-        .lang-c   { background: #555555; }
-        .lang-html { background: #e34c26; }
-
-        .fork-badge {
-            font-size: 11px;
-            padding: 2px 8px;
-            border-radius: 10px;
-            background: #1f6feb22;
-            color: #58a6ff;
-            border: 1px solid #1f6feb44;
-            margin-left: auto;
-        }
-
-        /* ── Activity ── */
-        .activity-list {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 40px;
-        }
-
-        .activity-item {
+            font-style: italic;
+            color: var(--subtext);
+            min-height: 60px;
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 10px 0;
-            border-bottom: 1px solid #21262d;
-            font-size: 14px;
+            position: relative;
         }
+        .quote-box .quote-mark { font-size: 28px; color: var(--accent); opacity: 0.4; line-height: 1; }
+        .quote-box .quote-text { flex: 1; line-height: 1.5; }
+        .quote-box .quote-from { font-size: 12px; opacity: 0.6; margin-top: 4px; }
 
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-
-        .activity-icon {
-            width: 24px;
-            height: 24px;
-            border-radius: 6px;
+        /* Stats row */
+        .stats {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-
-        .activity-icon.push { background: #1f6feb33; }
-        .activity-icon.create { background: #3fb95033; }
-        .activity-icon.star { background: #d2992233; }
-
-        .activity-item .act-repo {
-            color: #58a6ff;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .activity-item .act-repo:hover {
-            text-decoration: underline;
-        }
-
-        .activity-item .act-date {
-            margin-left: auto;
-            font-size: 12px;
-            color: #484f58;
-        }
-
-        .activity-item .act-type {
-            color: #8b949e;
-            font-size: 13px;
-        }
-
-        /* ── Contribution Graph ── */
-        .contrib-section {
-            margin-bottom: 40px;
-        }
-
-        .contrib-grid {
-            display: flex;
-            gap: 3px;
+            gap: 12px;
+            margin: 20px 0;
             flex-wrap: wrap;
-            background: #161b22;
-            border: 1px solid #30363d;
+        }
+        .stat-item {
+            flex: 1;
+            min-width: 100px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 24px;
-            justify-content: center;
+            padding: 16px;
+            text-align: center;
+        }
+        .stat-item .num { font-size: 26px; font-weight: 700; color: var(--accent); }
+        .stat-item .label { font-size: 12px; color: var(--subtext); margin-top: 2px; }
+
+        /* Tab buttons */
+        .tab-bar {
+            display: flex;
+            gap: 8px;
+            margin: 24px 0;
+            padding: 6px;
+            background: var(--card-bg);
+            border-radius: 14px;
+            border: 1px solid var(--border);
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            background: transparent;
+            color: var(--subtext);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tab-btn:hover { background: var(--hover); color: var(--text); }
+        .tab-btn.active {
+            background: var(--accent);
+            color: #fff;
         }
 
-        /* Simulated contribution graph with all today's commits */
-        .contrib-cell {
-            width: 14px;
-            height: 14px;
-            border-radius: 3px;
-            background: #0e4429;
+        /* Tab content */
+        .tab-panel { display: none; animation: fadeUp 0.3s ease; }
+        .tab-panel.active { display: block; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .contrib-cell.level-1 { background: #0e4429; }
-        .contrib-cell.level-2 { background: #006d32; }
-        .contrib-cell.level-3 { background: #26a641; }
-        .contrib-cell.level-4 { background: #39d353; }
-        .contrib-cell.empty { background: #161b22; border: 1px solid #21262d; }
-
-        .contrib-legend {
+        /* Project cards */
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 24px 0 16px;
             display: flex;
             align-items: center;
-            gap: 6px;
-            justify-content: flex-end;
+            gap: 8px;
+        }
+        .project-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+        }
+        .project-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            transition: all 0.2s;
+        }
+        .project-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 4px 16px var(--shadow);
+            transform: translateY(-2px);
+        }
+        .project-card .p-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--accent);
+            display: block;
+            margin-bottom: 6px;
+        }
+        .project-card .p-name:hover { text-decoration: underline; }
+        .project-card .p-desc {
+            font-size: 13px;
+            color: var(--subtext);
+            line-height: 1.5;
+        }
+        .project-card .p-meta {
+            display: flex;
+            gap: 14px;
             margin-top: 12px;
             font-size: 12px;
-            color: #8b949e;
+            color: var(--subtext);
+        }
+        .project-card .fork-badge {
+            padding: 1px 8px;
+            border-radius: 8px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 11px;
+            margin-left: auto;
         }
 
-        /* ── Footer ── */
-        .footer {
-            text-align: center;
-            padding: 24px 0;
+        /* Intro */
+        .intro-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            line-height: 1.8;
+        }
+        .intro-section p { margin-bottom: 12px; color: var(--subtext); }
+        .intro-section ul { padding-left: 20px; color: var(--subtext); margin-bottom: 12px; }
+        .intro-section ul li { margin-bottom: 4px; }
+
+        /* Activity */
+        .activity-list {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 4px 0;
+        }
+        .act-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border);
             font-size: 13px;
-            color: #484f58;
-            border-top: 1px solid #21262d;
+        }
+        .act-item:last-child { border-bottom: none; }
+        .act-icon {
+            width: 28px; height: 28px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 700;
+            flex-shrink: 0;
+        }
+        .act-icon.push { background: #1f6feb33; color: #58a6ff; }
+        .act-icon.create { background: #3fb95033; color: #3fb950; }
+        .act-icon.star { background: #d2992233; color: #d29922; }
+        .act-repo { color: var(--accent); font-weight: 500; }
+        .act-date { margin-left: auto; font-size: 11px; color: var(--subtext); opacity: 0.6; }
+
+        /* Theme switch */
+        .theme-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 12px var(--shadow);
+        }
+        .theme-switch:hover { transform: scale(1.1); }
+
+        /* Mobile menu button */
+        .menu-btn {
+            display: none;
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 100;
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(108,99,255,0.4);
         }
 
-        .footer a {
-            color: #58a6ff;
-            text-decoration: none;
+        /* Footer */
+        footer {
+            padding: 20px 0;
+            text-align: center;
+            font-size: 12px;
+            color: var(--subtext);
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
         }
+        footer a { color: var(--accent); }
 
-        /* ── Responsive ── */
-        @media (max-width: 640px) {
-            .header {
-                flex-direction: column;
-                text-align: center;
+        /* ─── Responsive ─── */
+        @media (max-width: 800px) {
+            .left {
+                position: fixed;
+                z-index: 999;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                background: none;
+                padding: 0;
+                transition: all 0.3s;
             }
-            .avatar { width: 140px; height: 140px; }
-            .header-info .meta { justify-content: center; }
+            .left.open {
+                pointer-events: auto;
+                background: rgba(0,0,0,0.5);
+            }
+            .left-inner {
+                position: absolute;
+                left: -70vw;
+                width: 70vw;
+                height: 100%;
+                padding: 20px;
+                background: var(--bg);
+                transition: left 0.25s ease-out;
+                overflow-y: auto;
+            }
+            .left.open .left-inner { left: 0; }
+            .right { width: 100%; padding: 24px 16px; }
+            .welcome { font-size: 32px; }
+            .sub-text { font-size: 15px; }
+            .project-list { grid-template-columns: 1fr; }
+            .menu-btn { display: flex; align-items: center; justify-content: center; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
 
-        <!-- ─── Header ─── -->
-        <div class="header">
+<div class="theme-switch" id="themeToggle" onclick="toggleTheme()">🌙</div>
+<button class="menu-btn" onclick="toggleSidebar()">☰</button>
+
+<div class="main">
+    <!-- Left Sidebar -->
+    <div class="left" id="sidebar">
+        <div class="left-inner">
             <img class="avatar" src="https://avatars.githubusercontent.com/u/174946900?v=4" alt="zmr1742">
-            <div class="header-info">
-                <h1>zmr1742</h1>
-                <div class="tagline">Android Kernel Developer &amp; Enthusiast</div>
-                <div class="meta">
-                    <span>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="#8b949e"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-                        zmr1742
-                    </span>
-                    <span>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="#8b949e"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 010-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"/></svg>
-                        3 public repos
-                    </span>
-                    <span>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="#8b949e"><path fill-rule="evenodd" d="M1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0zM8 0a8 8 0 100 16A8 8 0 008 0zm.5 4.5a.5.5 0 00-1 0v4a.5.5 0 00.5.5h3a.5.5 0 000-1H8.5V4.5z"/></svg>
-                        Joined Jul 2024
-                    </span>
+            <div class="left-name">zmr1742</div>
+            <div class="left-tagline">📱 Android Kernel Developer</div>
+
+            <div class="left-card">
+                <div style="font-size:13px;color:var(--subtext);margin-bottom:8px;">📍 Location</div>
+                <div style="font-size:14px;">Shenzhen, China</div>
+            </div>
+
+            <div class="left-card">
+                <div style="font-size:13px;font-weight:600;margin-bottom:8px;">🏷️ Tags</div>
+                <div class="left-tags">
+                    <span>Kernel Dev</span>
+                    <span>Android</span>
+                    <span>KernelSU</span>
+                    <span>SUSFS</span>
+                    <span>CI/CD</span>
+                    <span>GitHub Actions</span>
                 </div>
             </div>
-        </div>
 
-        <!-- ─── Stats ─── -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="num">3</div>
-                <div class="label">Repositories</div>
+            <div class="left-card">
+                <div class="timeline-title">📅 Timeline</div>
+                <ul class="timeline">
+                    <li>
+                        <div>Created zmr1742.github.com</div>
+                        <div class="tl-date">Jul 8, 2026</div>
+                    </li>
+                    <li>
+                        <div>Melt Kernel workflow fix (SUSFS boot hang)</div>
+                        <div class="tl-date">Jul 8, 2026</div>
+                    </li>
+                    <li>
+                        <div>Forked android_kernel_xiaomi_marble</div>
+                        <div class="tl-date">Jul 6, 2026</div>
+                    </li>
+                    <li>
+                        <div>Joined GitHub</div>
+                        <div class="tl-date">Jul 7, 2024</div>
+                    </li>
+                </ul>
             </div>
-            <div class="stat-card">
-                <div class="num">2</div>
-                <div class="label">Forked</div>
-            </div>
-            <div class="stat-card">
-                <div class="num">1</div>
-                <div class="label">Own Repos</div>
-            </div>
-            <div class="stat-card">
-                <div class="num">0</div>
-                <div class="label">Followers</div>
-            </div>
-        </div>
-
-        <!-- ─── Languages ─── -->
-        <h2 class="section-title">Languages</h2>
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="num" style="color:#555555;">C</div>
-                <div class="label">Kernel &amp; Low-level</div>
-            </div>
-            <div class="stat-card">
-                <div class="num" style="color:#e34c26;">HTML</div>
-                <div class="label">Web / Profile</div>
-            </div>
-            <div class="stat-card">
-                <div class="num" style="color:#f18e33;">Shell</div>
-                <div class="label">Scripting &amp; CI</div>
-            </div>
-            <div class="stat-card">
-                <div class="num" style="color:#3572A5;">Python</div>
-                <div class="label">Utility scripts</div>
-            </div>
-        </div>
-
-        <!-- ─── Repositories ─── -->
-        <h2 class="section-title">Repositories</h2>
-        <div class="repo-grid">
-            <div class="repo-card">
-                <a class="repo-name" href="https://github.com/zmr1742/android_kernel_xiaomi_marble">android_kernel_xiaomi_marble</a>
-                <div class="repo-desc">Melt Kernel For Redmi Note 12 Turbo / Poco F5 — automated CI builds with SukiSU, ReSukiSU &amp; SUSFS variants.</div>
-                <div class="repo-meta">
-                    <span><span class="lang-dot lang-c"></span>C</span>
-                    <span>
-                        <svg width="14" height="14" fill="#8b949e"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>
-                        0
-                    </span>
-                    <span>
-                        <svg width="14" height="14" fill="#8b949e"><path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75v-.878a2.25 2.25 0 111.5 0v.878a2.25 2.25 0 01-2.25 2.25h-1.5v2.128a2.251 2.251 0 11-1.5 0V8.5h-1.5A2.25 2.25 0 013.5 6.25v-.878a2.25 2.25 0 111.5 0z"/></svg>
-                        1 fork
-                    </span>
-                    <span class="fork-badge">Fork</span>
-                </div>
-            </div>
-            <div class="repo-card">
-                <a class="repo-name" href="https://github.com/zmr1742/GKI_KernelSU_SUSFS">GKI_KernelSU_SUSFS</a>
-                <div class="repo-desc">GKI 内核自动构建 — 集成 KernelSU &amp; SUSFS，支持多 Android 版本。</div>
-                <div class="repo-meta">
-                    <span><span class="lang-dot lang-c"></span>C</span>
-                    <span>
-                        <svg width="14" height="14" fill="#8b949e"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>
-                        0
-                    </span>
-                    <span class="fork-badge">Fork</span>
-                </div>
-            </div>
-            <div class="repo-card">
-                <a class="repo-name" href="https://github.com/zmr1742/zmr1742.github.com">zmr1742.github.com</a>
-                <div class="repo-desc">Personal GitHub Pages profile page — you're looking at it right now!</div>
-                <div class="repo-meta">
-                    <span><span class="lang-dot lang-html"></span>HTML</span>
-                    <span>
-                        <svg width="14" height="14" fill="#8b949e"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>
-                        0
-                    </span>
-                </div>
-            </div>
-        </div>
-
-        <!-- ─── Recent Activity ─── -->
-        <h2 class="section-title">Recent Activity</h2>
-        <div class="activity-list">
-            <div class="activity-item">
-                <div class="activity-icon create" style="color:#3fb950;">+</div>
-                <span class="act-type">Created</span>
-                <a class="act-repo" href="https://github.com/zmr1742/zmr1742.github.com">zmr1742.github.com</a>
-                <span class="act-date">2026-07-08</span>
-            </div>
-            <div class="activity-item">
-                <div class="activity-icon push" style="color:#58a6ff;">P</div>
-                <span class="act-type">Pushed to</span>
-                <a class="act-repo" href="https://github.com/zmr1742/android_kernel_xiaomi_marble">android_kernel_xiaomi_marble</a>
-                <span class="act-date">2026-07-08</span>
-            </div>
-            <div class="activity-item">
-                <div class="activity-icon push" style="color:#58a6ff;">P</div>
-                <span class="act-type">Pushed to</span>
-                <a class="act-repo" href="https://github.com/zmr1742/android_kernel_xiaomi_marble">android_kernel_xiaomi_marble</a>
-                <span class="act-date">2026-07-08</span>
-            </div>
-            <div class="activity-item">
-                <div class="activity-icon push" style="color:#58a6ff;">P</div>
-                <span class="act-type">Pushed to</span>
-                <a class="act-repo" href="https://github.com/zmr1742/android_kernel_xiaomi_marble">android_kernel_xiaomi_marble</a>
-                <span class="act-date">2026-07-08</span>
-            </div>
-            <div class="activity-item">
-                <div class="activity-icon push" style="color:#58a6ff;">P</div>
-                <span class="act-type">Pushed to</span>
-                <a class="act-repo" href="https://github.com/zmr1742/android_kernel_xiaomi_marble">android_kernel_xiaomi_marble</a>
-                <span class="act-date">2026-07-08</span>
-            </div>
-            <div class="activity-item">
-                <div class="activity-icon push" style="color:#58a6ff;">P</div>
-                <span class="act-type">Pushed to</span>
-                <a class="act-repo" href="https://github.com/zmr1742/GKI_KernelSU_SUSFS">GKI_KernelSU_SUSFS</a>
-                <span class="act-date">2026-07-06</span>
-            </div>
-        </div>
-
-        <!-- ─── Contribution Graph ─── -->
-        <h2 class="section-title">Contribution Activity</h2>
-        <div class="contrib-section">
-            <div class="contrib-grid" id="contribGrid">
-                <!-- Generated by JS -->
-            </div>
-            <div class="contrib-legend">
-                <span>Less</span>
-                <div class="contrib-cell empty"></div>
-                <div class="contrib-cell level-1"></div>
-                <div class="contrib-cell level-2"></div>
-                <div class="contrib-cell level-3"></div>
-                <div class="contrib-cell level-4"></div>
-                <span>More</span>
-            </div>
-        </div>
-
-        <!-- ─── Footer ─── -->
-        <div class="footer">
-            &copy; 2025-2026 <a href="https://github.com/zmr1742">zmr1742</a> &middot;
-            Powered by <a href="https://github.com">GitHub Pages</a>
         </div>
     </div>
 
-    <script>
-        (function() {
-            var grid = document.getElementById('contribGrid');
-            var weeks = 26;
-            var days = weeks * 7;
-            var today = new Date();
-            var cells = '';
-            for (var i = 0; i < days; i++) {
-                var d = new Date(today);
-                d.setDate(d.getDate() - (days - 1 - i));
-                // Highlight the last 7 days (when we did all the work)
-                var diff = Math.floor((today - d) / (1000*60*60*24));
-                var level = 0;
-                if (diff >= 0 && diff <= 6) {  // today and the 6 days before = ~July 2-8
-                    level = Math.min(4, 1 + Math.floor(Math.random() * 4));
-                } else if (diff >= 7 && diff <= 13) {
-                    level = Math.floor(Math.random() * 2);  // sparse
-                } else {
-                    level = Math.floor(Math.random() * 1.5); // very sparse
-                }
-                cells += '<div class="contrib-cell level-' + level + '" title="' + d.toISOString().slice(0,10) + '"></div>';
-            }
-            grid.innerHTML = cells;
-        })();
-    </script>
+    <!-- Right Content -->
+    <div class="right">
+        <!-- Welcome -->
+        <div class="welcome">Hello, I'm <span class="gradient-text">zmr1742</span></div>
+        <div class="sub-text">👨‍💻 <span class="highlight">Android Kernel</span> Developer &amp; Enthusiast</div>
+
+        <!-- Quote -->
+        <div class="quote-box" id="quoteBox">
+            <div class="quote-mark">"</div>
+            <div>
+                <div class="quote-text" id="quoteText">Loading a random quote...</div>
+                <div class="quote-from" id="quoteFrom">— 一言</div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-item"><div class="num">3</div><div class="label">Repositories</div></div>
+            <div class="stat-item"><div class="num">2</div><div class="label">Forked</div></div>
+            <div class="stat-item"><div class="num">1</div><div class="label">Own Repos</div></div>
+            <div class="stat-item"><div class="num">C</div><div class="label">Main Language</div></div>
+        </div>
+
+        <!-- Tab Bar -->
+        <div class="tab-bar">
+            <button class="tab-btn active" onclick="switchTab('projects')">📂 Projects</button>
+            <button class="tab-btn" onclick="switchTab('about')">👤 About</button>
+            <button class="tab-btn" onclick="switchTab('activity')">📊 Activity</button>
+        </div>
+
+        <!-- Tab: Projects -->
+        <div class="tab-panel active" id="tab-projects">
+            <div class="section-title">📦 Forked Repositories</div>
+            <div class="project-list">
+                <a class="project-card" href="https://github.com/zmr1742/android_kernel_xiaomi_marble" target="_blank">
+                    <span class="p-name">android_kernel_xiaomi_marble</span>
+                    <div class="p-desc">Melt Kernel For Redmi Note 12 Turbo / Poco F5 — automated CI builds with SukiSU &amp; SUSFS</div>
+                    <div class="p-meta">
+                        <span>🔵 C</span>
+                        <span>⭐ 0</span>
+                        <span>⑂ 1 fork</span>
+                        <span class="fork-badge">Fork</span>
+                    </div>
+                </a>
+                <a class="project-card" href="https://github.com/zmr1742/GKI_KernelSU_SUSFS" target="_blank">
+                    <span class="p-name">GKI_KernelSU_SUSFS</span>
+                    <div class="p-desc">GKI 内核自动构建 — 集成 KernelSU &amp; SUSFS，支持多 Android 版本</div>
+                    <div class="p-meta">
+                        <span>🔵 C</span>
+                        <span>⭐ 0</span>
+                        <span>⑂ 0 fork</span>
+                        <span class="fork-badge">Fork</span>
+                    </div>
+                </a>
+            </div>
+
+            <div class="section-title">🌐 Own Repositories</div>
+            <div class="project-list">
+                <a class="project-card" href="https://github.com/zmr1742/zmr1742.github.com" target="_blank">
+                    <span class="p-name">zmr1742.github.com</span>
+                    <div class="p-desc">Personal GitHub Pages profile page — you're looking at it right now!</div>
+                    <div class="p-meta">
+                        <span>🟠 HTML</span>
+                        <span>⭐ 0</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Tab: About -->
+        <div class="tab-panel" id="tab-about">
+            <div class="intro-section">
+                <p>Hi, I'm <strong>zmr1742</strong>, an Android kernel enthusiast based in Shenzhen, China.</p>
+                <p>I focus on automated kernel compilation and customization for Xiaomi devices, specifically the Redmi Note 12 Turbo / Poco F5 (marble).</p>
+
+                <h3 style="margin:20px 0 10px;font-size:16px;">🔧 What I Do</h3>
+                <ul>
+                    <li>Android Kernel compilation &amp; customization</li>
+                    <li>KernelSU / SUSFS / GKI kernel integration</li>
+                    <li>GitHub Actions CI/CD automation for kernel building</li>
+                    <li>AnyKernel3 packaging for Magisk/KSU modules</li>
+                </ul>
+
+                <h3 style="margin:20px 0 10px;font-size:16px;">🎯 Interests</h3>
+                <ul>
+                    <li>Linux kernel internals (especially VFS, filesystems)</li>
+                    <li>Android security &amp; root solutions</li>
+                    <li>Automation &amp; DevOps (GitHub Actions, CI/CD)</li>
+                </ul>
+
+                <h3 style="margin:20px 0 10px;font-size:16px;">🔗 Connect</h3>
+                <p>
+                    <a href="https://github.com/zmr1742" style="color:var(--accent);font-weight:600;">GitHub</a> •
+                    <a href="https://github.com/zmr1742/android_kernel_xiaomi_marble" style="color:var(--accent);font-weight:600;">Melt Kernel</a> •
+                    <a href="https://github.com/zmr1742/GKI_KernelSU_SUSFS" style="color:var(--accent);font-weight:600;">GKI KernelSU SUSFS</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Tab: Activity -->
+        <div class="tab-panel" id="tab-activity">
+            <div class="activity-list">
+                <div class="act-item">
+                    <div class="act-icon create">+</div>
+                    <span>Created <a class="act-repo" href="https://github.com/zmr1742/zmr1742.github.com">zmr1742.github.com</a></span>
+                    <span class="act-date">Jul 8</span>
+                </div>
+                <div class="act-item">
+                    <div class="act-icon push">P</div>
+                    <span>Pushed to <a class="act-repo" href="https://github.com/zmr1742/android_kernel_xiaomi_marble">android_kernel_xiaomi_marble</a></span>
+                    <span class="act-date">Jul 8</span>
+                </div>
+                <div class="act-item">
+                    <div class="act-icon push">P</div>
+                    <span>Pushed to <a class="act-repo" href="https://github.com/zmr1742/android_kernel_xiaomi_marble">android_kernel_xiaomi_marble</a></span>
+                    <span class="act-date">Jul 8</span>
+                </div>
+                <div class="act-item">
+                    <div class="act-icon push">P</div>
+                    <span>Pushed to <a class="act-repo" href="https://github.com/zmr1742/GKI_KernelSU_SUSFS">GKI_KernelSU_SUSFS</a></span>
+                    <span class="act-date">Jul 6</span>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            © 2025-2026 <a href="https://github.com/zmr1742">zmr1742</a> &nbsp;|&nbsp;
+            <a href="https://github.com/zmr1742/zmr1742.github.com">Source</a> &nbsp;|&nbsp;
+            Quotes by <a href="https://hitokoto.cn">一言</a>
+        </footer>
+    </div>
+</div>
+
+<script>
+    // ─── Theme ───
+    (function() {
+        var t = document.cookie.match(/theme=([^;]+)/);
+        if (t && t[1] === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+    })();
+
+    function toggleTheme() {
+        var html = document.documentElement;
+        var isDark = html.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+            html.removeAttribute('data-theme');
+            document.cookie = 'theme=light;path=/;max-age=31536000';
+            document.getElementById('themeToggle').textContent = '🌙';
+        } else {
+            html.setAttribute('data-theme', 'dark');
+            document.cookie = 'theme=dark;path=/;max-age=31536000';
+            document.getElementById('themeToggle').textContent = '☀️';
+        }
+    }
+
+    // ─── Tab ───
+    function switchTab(name) {
+        document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+        document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+        document.getElementById('tab-' + name).classList.add('active');
+        document.querySelector('.tab-btn[onclick*="' + name + '"]').classList.add('active');
+    }
+
+    // ─── Sidebar (mobile) ───
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('open');
+    }
+    document.getElementById('sidebar').addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('open');
+    });
+
+    // ─── Quote via 一言 API ───
+    function fetchQuote() {
+        var texts = [
+            { h: 'Stay hungry, stay foolish.', f: 'Steve Jobs' },
+            { h: 'The only way to do great work is to love what you do.', f: 'Steve Jobs' },
+            { h: '活着就是为了改变世界。', f: 'Steve Jobs' },
+            { h: '代码如诗，简洁为上。', f: 'Unknown' },
+            { h: 'Talk is cheap. Show me the code.', f: 'Linus Torvalds' },
+            { h: 'In software, the most beautiful code is the simplest code.', f: 'Unknown' },
+            { h: '做正确的事，等待结果自然发生。', f: 'Unknown' },
+            { h: '不要问你的国家能为你做什么，问问你能为国家做什么。', f: 'John F. Kennedy' },
+            { h: '学而不思则罔，思而不学则殆。', f: '孔子' },
+            { h: '千里之行，始于足下。', f: '老子' },
+        ];
+        var q = document.getElementById('quoteText');
+        var f = document.getElementById('quoteFrom');
+
+        fetch('https://v1.hitokoto.cn/?c=d&c=g&c=i')
+            .then(function(r) { return r.json(); })
+            .then(function(d) {
+                q.textContent = d.hitokoto;
+                f.textContent = '— ' + (d.from_who || '') + (d.from ? '《' + d.from + '》' : '一言');
+            })
+            .catch(function() {
+                var r = texts[Math.floor(Math.random() * texts.length)];
+                q.textContent = r.h;
+                f.textContent = '— ' + r.f;
+            });
+    }
+    fetchQuote();
+    setInterval(fetchQuote, 120000); // refresh every 2 min
+</script>
 </body>
 </html>
