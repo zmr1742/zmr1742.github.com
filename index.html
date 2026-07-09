@@ -161,7 +161,6 @@
             min-height: 100vh;
         }
 
-        /* Header */
         .welcome {
             font-size: 48px;
             font-weight: 800;
@@ -206,7 +205,7 @@
         .quote-box .quote-text { flex: 1; line-height: 1.5; }
         .quote-box .quote-from { font-size: 12px; opacity: 0.6; margin-top: 4px; }
 
-        /* Stats row */
+        /* Stats */
         .stats {
             display: flex;
             gap: 12px;
@@ -253,7 +252,6 @@
             color: #fff;
         }
 
-        /* Tab content */
         .tab-panel { display: none; animation: fadeUp 0.3s ease; }
         .tab-panel.active { display: block; }
         @keyframes fadeUp {
@@ -261,7 +259,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Project cards */
         .section-title {
             font-size: 20px;
             font-weight: 700;
@@ -316,7 +313,6 @@
             margin-left: auto;
         }
 
-        /* Intro */
         .intro-section {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -328,7 +324,6 @@
         .intro-section ul { padding-left: 20px; color: var(--subtext); margin-bottom: 12px; }
         .intro-section ul li { margin-bottom: 4px; }
 
-        /* Activity */
         .activity-list {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -357,12 +352,16 @@
         .act-repo { color: var(--accent); font-weight: 500; }
         .act-date { margin-left: auto; font-size: 11px; color: var(--subtext); opacity: 0.6; }
 
-        /* Theme switch */
-        .theme-switch {
+        /* Top-right controls */
+        .top-controls {
             position: fixed;
             top: 20px;
             right: 20px;
             z-index: 100;
+            display: flex;
+            gap: 8px;
+        }
+        .ctrl-btn {
             width: 44px; height: 44px;
             border-radius: 50%;
             background: var(--card-bg);
@@ -371,13 +370,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 16px;
+            font-weight: 600;
             transition: all 0.3s;
             box-shadow: 0 2px 12px var(--shadow);
+            color: var(--text);
         }
-        .theme-switch:hover { transform: scale(1.1); }
+        .ctrl-btn:hover { transform: scale(1.1); }
+        .ctrl-btn.lang-btn { width: 52px; font-size: 13px; font-weight: 700; }
 
-        /* Mobile menu button */
         .menu-btn {
             display: none;
             position: fixed;
@@ -394,7 +395,6 @@
             box-shadow: 0 4px 16px rgba(108,99,255,0.4);
         }
 
-        /* Footer */
         footer {
             padding: 20px 0;
             text-align: center;
@@ -405,7 +405,6 @@
         }
         footer a { color: var(--accent); }
 
-        /* ─── Responsive ─── */
         @media (max-width: 800px) {
             .left {
                 position: fixed;
@@ -437,12 +436,18 @@
             .sub-text { font-size: 15px; }
             .project-list { grid-template-columns: 1fr; }
             .menu-btn { display: flex; align-items: center; justify-content: center; }
+            .top-controls { top: 12px; right: 12px; }
+            .ctrl-btn { width: 38px; height: 38px; font-size: 14px; }
+            .ctrl-btn.lang-btn { width: 44px; font-size: 12px; }
         }
     </style>
 </head>
 <body>
 
-<div class="theme-switch" id="themeToggle" onclick="toggleTheme()">🌙</div>
+<div class="top-controls">
+    <button class="ctrl-btn lang-btn" id="langToggle" onclick="toggleLang()">中</button>
+    <button class="ctrl-btn" id="themeToggle" onclick="toggleTheme()">🌙</button>
+</div>
 <button class="menu-btn" onclick="toggleSidebar()">☰</button>
 
 <div class="main">
@@ -451,15 +456,15 @@
         <div class="left-inner">
             <img class="avatar" src="https://avatars.githubusercontent.com/u/174946900?v=4" alt="zmr1742">
             <div class="left-name">zmr1742</div>
-            <div class="left-tagline">📱 Android Kernel Developer</div>
+            <div class="left-tagline">📱 <span data-i18n="sideTagline">Android Kernel Developer</span></div>
 
             <div class="left-card">
-                <div style="font-size:13px;color:var(--subtext);margin-bottom:8px;">📍 Location</div>
-                <div style="font-size:14px;">Shenzhen, China</div>
+                <div style="font-size:13px;color:var(--subtext);margin-bottom:8px;">📍 <span data-i18n="sideLocation">Location</span></div>
+                <div style="font-size:14px;" data-i18n="sideLocationVal">Shenzhen, China</div>
             </div>
 
             <div class="left-card">
-                <div style="font-size:13px;font-weight:600;margin-bottom:8px;">🏷️ Tags</div>
+                <div style="font-size:13px;font-weight:600;margin-bottom:8px;">🏷️ <span data-i18n="sideTags">Tags</span></div>
                 <div class="left-tags">
                     <span>Kernel Dev</span>
                     <span>Android</span>
@@ -471,22 +476,22 @@
             </div>
 
             <div class="left-card">
-                <div class="timeline-title">📅 Timeline</div>
+                <div class="timeline-title">📅 <span data-i18n="sideTimeline">Timeline</span></div>
                 <ul class="timeline">
                     <li>
-                        <div>Created zmr1742.github.com</div>
+                        <div data-i18n="tlCreated">Created zmr1742.github.com</div>
                         <div class="tl-date">Jul 8, 2026</div>
                     </li>
                     <li>
-                        <div>Melt Kernel workflow fix (SUSFS boot hang)</div>
+                        <div data-i18n="tlMeltFix">Melt Kernel workflow fix (SUSFS boot hang)</div>
                         <div class="tl-date">Jul 8, 2026</div>
                     </li>
                     <li>
-                        <div>Forked android_kernel_xiaomi_marble</div>
+                        <div data-i18n="tlForked">Forked android_kernel_xiaomi_marble</div>
                         <div class="tl-date">Jul 6, 2026</div>
                     </li>
                     <li>
-                        <div>Joined GitHub</div>
+                        <div data-i18n="tlJoined">Joined GitHub</div>
                         <div class="tl-date">Jul 7, 2024</div>
                     </li>
                 </ul>
@@ -496,69 +501,55 @@
 
     <!-- Right Content -->
     <div class="right">
-        <!-- Welcome -->
-        <div class="welcome">Hello, I'm <span class="gradient-text">zmr1742</span></div>
-        <div class="sub-text">👨‍💻 <span class="highlight">Android Kernel</span> Developer &amp; Enthusiast</div>
+        <div class="welcome"><span data-i18n="welcome">Hello, I'm</span> <span class="gradient-text">zmr1742</span></div>
+        <div class="sub-text">👨‍💻 <span class="highlight"><span data-i18n="role">Android Kernel</span></span> <span data-i18n="roleSuffix">Developer &amp; Enthusiast</span></div>
 
         <!-- Quote -->
         <div class="quote-box" id="quoteBox">
             <div class="quote-mark">"</div>
             <div>
-                <div class="quote-text" id="quoteText">Loading a random quote...</div>
-                <div class="quote-from" id="quoteFrom">— 一言</div>
+                <div class="quote-text" id="quoteText"><span data-i18n="quoteLoading">Loading a random quote...</span></div>
+                <div class="quote-from" id="quoteFrom">— <span data-i18n="hitokoto">一言</span></div>
             </div>
         </div>
 
         <!-- Stats -->
         <div class="stats">
-            <div class="stat-item"><div class="num">3</div><div class="label">Repositories</div></div>
-            <div class="stat-item"><div class="num">2</div><div class="label">Forked</div></div>
-            <div class="stat-item"><div class="num">1</div><div class="label">Own Repos</div></div>
-            <div class="stat-item"><div class="num">C</div><div class="label">Main Language</div></div>
+            <div class="stat-item"><div class="num">3</div><div class="label" data-i18n="statRepos">Repositories</div></div>
+            <div class="stat-item"><div class="num">2</div><div class="label" data-i18n="statForked">Forked</div></div>
+            <div class="stat-item"><div class="num">1</div><div class="label" data-i18n="statOwn">Own Repos</div></div>
+            <div class="stat-item"><div class="num">C</div><div class="label" data-i18n="statMainLang">Main Language</div></div>
         </div>
 
         <!-- Tab Bar -->
         <div class="tab-bar">
-            <button class="tab-btn active" onclick="switchTab('projects')">📂 Projects</button>
-            <button class="tab-btn" onclick="switchTab('about')">👤 About</button>
-            <button class="tab-btn" onclick="switchTab('activity')">📊 Activity</button>
+            <button class="tab-btn active" onclick="switchTab('projects')">📂 <span data-i18n="tabProjects">Projects</span></button>
+            <button class="tab-btn" onclick="switchTab('about')">👤 <span data-i18n="tabAbout">About</span></button>
+            <button class="tab-btn" onclick="switchTab('activity')">📊 <span data-i18n="tabActivity">Activity</span></button>
         </div>
 
         <!-- Tab: Projects -->
         <div class="tab-panel active" id="tab-projects">
-            <div class="section-title">📦 Forked Repositories</div>
+            <div class="section-title">📦 <span data-i18n="secForked">Forked Repositories</span></div>
             <div class="project-list">
                 <a class="project-card" href="https://github.com/zmr1742/android_kernel_xiaomi_marble" target="_blank">
                     <span class="p-name">android_kernel_xiaomi_marble</span>
-                    <div class="p-desc">Melt Kernel For Redmi Note 12 Turbo / Poco F5 — automated CI builds with SukiSU &amp; SUSFS</div>
-                    <div class="p-meta">
-                        <span>🔵 C</span>
-                        <span>⭐ 0</span>
-                        <span>⑂ 1 fork</span>
-                        <span class="fork-badge">Fork</span>
-                    </div>
+                    <div class="p-desc" data-i18n="descMelt">Melt Kernel For Redmi Note 12 Turbo / Poco F5 — automated CI builds with SukiSU &amp; SUSFS</div>
+                    <div class="p-meta"><span>🔵 C</span><span>⭐ 0</span><span>⑂ 1 fork</span><span class="fork-badge">Fork</span></div>
                 </a>
                 <a class="project-card" href="https://github.com/zmr1742/GKI_KernelSU_SUSFS" target="_blank">
                     <span class="p-name">GKI_KernelSU_SUSFS</span>
-                    <div class="p-desc">GKI 内核自动构建 — 集成 KernelSU &amp; SUSFS，支持多 Android 版本</div>
-                    <div class="p-meta">
-                        <span>🔵 C</span>
-                        <span>⭐ 0</span>
-                        <span>⑂ 0 fork</span>
-                        <span class="fork-badge">Fork</span>
-                    </div>
+                    <div class="p-desc" data-i18n="descGKI">GKI kernel auto-build — integrated KernelSU &amp; SUSFS, multi-Android version support</div>
+                    <div class="p-meta"><span>🔵 C</span><span>⭐ 0</span><span>⑂ 0 fork</span><span class="fork-badge">Fork</span></div>
                 </a>
             </div>
 
-            <div class="section-title">🌐 Own Repositories</div>
+            <div class="section-title">🌐 <span data-i18n="secOwn">Own Repositories</span></div>
             <div class="project-list">
                 <a class="project-card" href="https://github.com/zmr1742/zmr1742.github.com" target="_blank">
                     <span class="p-name">zmr1742.github.com</span>
-                    <div class="p-desc">Personal GitHub Pages profile page — you're looking at it right now!</div>
-                    <div class="p-meta">
-                        <span>🟠 HTML</span>
-                        <span>⭐ 0</span>
-                    </div>
+                    <div class="p-desc" data-i18n="descProfile">Personal GitHub Pages profile page — you're looking at it right now!</div>
+                    <div class="p-meta"><span>🟠 HTML</span><span>⭐ 0</span></div>
                 </a>
             </div>
         </div>
@@ -566,72 +557,148 @@
         <!-- Tab: About -->
         <div class="tab-panel" id="tab-about">
             <div class="intro-section">
-                <p>Hi, I'm <strong>zmr1742</strong>, an Android kernel enthusiast based in Shenzhen, China.</p>
-                <p>I focus on automated kernel compilation and customization for Xiaomi devices, specifically the Redmi Note 12 Turbo / Poco F5 (marble).</p>
+                <p data-i18n="about1">Hi, I'm <strong>zmr1742</strong>, an Android kernel enthusiast based in Shenzhen, China.</p>
+                <p data-i18n="about2">I focus on automated kernel compilation and customization for Xiaomi devices, specifically the Redmi Note 12 Turbo / Poco F5 (marble).</p>
 
-                <h3 style="margin:20px 0 10px;font-size:16px;">🔧 What I Do</h3>
+                <h3 style="margin:20px 0 10px;font-size:16px;">🔧 <span data-i18n="aboutWhat">What I Do</span></h3>
                 <ul>
-                    <li>Android Kernel compilation &amp; customization</li>
-                    <li>KernelSU / SUSFS / GKI kernel integration</li>
-                    <li>GitHub Actions CI/CD automation for kernel building</li>
-                    <li>AnyKernel3 packaging for Magisk/KSU modules</li>
+                    <li data-i18n="aboutLi1">Android Kernel compilation &amp; customization</li>
+                    <li data-i18n="aboutLi2">KernelSU / SUSFS / GKI kernel integration</li>
+                    <li data-i18n="aboutLi3">GitHub Actions CI/CD automation for kernel building</li>
+                    <li data-i18n="aboutLi4">AnyKernel3 packaging for Magisk/KSU modules</li>
                 </ul>
 
-                <h3 style="margin:20px 0 10px;font-size:16px;">🎯 Interests</h3>
+                <h3 style="margin:20px 0 10px;font-size:16px;">🎯 <span data-i18n="aboutInterest">Interests</span></h3>
                 <ul>
-                    <li>Linux kernel internals (especially VFS, filesystems)</li>
-                    <li>Android security &amp; root solutions</li>
-                    <li>Automation &amp; DevOps (GitHub Actions, CI/CD)</li>
+                    <li data-i18n="interest1">Linux kernel internals (especially VFS, filesystems)</li>
+                    <li data-i18n="interest2">Android security &amp; root solutions</li>
+                    <li data-i18n="interest3">Automation &amp; DevOps (GitHub Actions, CI/CD)</li>
                 </ul>
 
-                <h3 style="margin:20px 0 10px;font-size:16px;">🔗 Connect</h3>
-                <p>
-                    <a href="https://github.com/zmr1742" style="color:var(--accent);font-weight:600;">GitHub</a> •
-                    <a href="https://github.com/zmr1742/android_kernel_xiaomi_marble" style="color:var(--accent);font-weight:600;">Melt Kernel</a> •
-                    <a href="https://github.com/zmr1742/GKI_KernelSU_SUSFS" style="color:var(--accent);font-weight:600;">GKI KernelSU SUSFS</a>
-                </p>
+                <h3 style="margin:20px 0 10px;font-size:16px;">🔗 <span data-i18n="aboutConnect">Connect</span></h3>
+                <p><a href="https://github.com/zmr1742" style="color:var(--accent);font-weight:600;">GitHub</a> • <a href="https://github.com/zmr1742/android_kernel_xiaomi_marble" style="color:var(--accent);font-weight:600;">Melt Kernel</a> • <a href="https://github.com/zmr1742/GKI_KernelSU_SUSFS" style="color:var(--accent);font-weight:600;">GKI KernelSU SUSFS</a></p>
             </div>
         </div>
 
         <!-- Tab: Activity -->
         <div class="tab-panel" id="tab-activity">
             <div class="activity-list">
-                <div class="act-item">
-                    <div class="act-icon create">+</div>
-                    <span>Created <a class="act-repo" href="https://github.com/zmr1742/zmr1742.github.com">zmr1742.github.com</a></span>
-                    <span class="act-date">Jul 8</span>
-                </div>
-                <div class="act-item">
-                    <div class="act-icon push">P</div>
-                    <span>Pushed to <a class="act-repo" href="https://github.com/zmr1742/android_kernel_xiaomi_marble">android_kernel_xiaomi_marble</a></span>
-                    <span class="act-date">Jul 8</span>
-                </div>
-                <div class="act-item">
-                    <div class="act-icon push">P</div>
-                    <span>Pushed to <a class="act-repo" href="https://github.com/zmr1742/android_kernel_xiaomi_marble">android_kernel_xiaomi_marble</a></span>
-                    <span class="act-date">Jul 8</span>
-                </div>
-                <div class="act-item">
-                    <div class="act-icon push">P</div>
-                    <span>Pushed to <a class="act-repo" href="https://github.com/zmr1742/GKI_KernelSU_SUSFS">GKI_KernelSU_SUSFS</a></span>
-                    <span class="act-date">Jul 6</span>
-                </div>
+                <div class="act-item"><div class="act-icon create">+</div><span data-i18n="actCreated">Created </span><a class="act-repo" href="https://github.com/zmr1742/zmr1742.github.com">zmr1742.github.com</a><span class="act-date">Jul 8</span></div>
+                <div class="act-item"><div class="act-icon push">P</div><span data-i18n="actPushed">Pushed to </span><a class="act-repo" href="https://github.com/zmr1742/android_kernel_xiaomi_marble">android_kernel_xiaomi_marble</a><span class="act-date">Jul 8</span></div>
+                <div class="act-item"><div class="act-icon push">P</div><span data-i18n="actPushed">Pushed to </span><a class="act-repo" href="https://github.com/zmr1742/android_kernel_xiaomi_marble">android_kernel_xiaomi_marble</a><span class="act-date">Jul 8</span></div>
+                <div class="act-item"><div class="act-icon push">P</div><span data-i18n="actPushed">Pushed to </span><a class="act-repo" href="https://github.com/zmr1742/GKI_KernelSU_SUSFS">GKI_KernelSU_SUSFS</a><span class="act-date">Jul 6</span></div>
             </div>
         </div>
 
         <footer>
             © 2025-2026 <a href="https://github.com/zmr1742">zmr1742</a> &nbsp;|&nbsp;
-            <a href="https://github.com/zmr1742/zmr1742.github.com">Source</a> &nbsp;|&nbsp;
-            Quotes by <a href="https://hitokoto.cn">一言</a>
+            <a href="https://github.com/zmr1742/zmr1742.github.com" data-i18n="footerSource">Source</a> &nbsp;|&nbsp;
+            <span data-i18n="footerQuotes">Quotes by</span> <a href="https://hitokoto.cn">一言 (Hitokoto)</a>
         </footer>
     </div>
 </div>
 
 <script>
+    // ─── i18n Dictionary ───
+    var i18n = {
+        'zh': {
+            sideTagline: 'Android 内核开发者',
+            sideLocation: '位置',
+            sideLocationVal: '中国深圳',
+            sideTags: '标签',
+            sideTimeline: '时间线',
+            tlCreated: '创建 zmr1742.github.com',
+            tlMeltFix: '修复 Melt Kernel 工作流 (SUSFS 卡开机)',
+            tlForked: 'Fork android_kernel_xiaomi_marble',
+            tlJoined: '加入 GitHub',
+            welcome: '你好，我是',
+            role: 'Android 内核',
+            roleSuffix: '开发者 & 爱好者',
+            quoteLoading: '正在加载名言...',
+            hitokoto: '一言',
+            statRepos: '仓库',
+            statForked: 'Fork 数',
+            statOwn: '自有仓库',
+            statMainLang: '主语言',
+            tabProjects: '项目',
+            tabAbout: '关于',
+            tabActivity: '动态',
+            secForked: 'Fork 仓库',
+            descMelt: 'Melt Kernel — 为 Redmi Note 12 Turbo / Poco F5 自动构建，集成 SukiSU & SUSFS',
+            descGKI: 'GKI 内核自动构建 — 集成 KernelSU & SUSFS，支持多 Android 版本',
+            secOwn: '自有仓库',
+            descProfile: 'GitHub Pages 个人主页 — 你现在看到的就是这个！',
+            about1: '嗨，我是 <strong>zmr1742</strong>，一名位于中国深圳的 Android 内核爱好者。',
+            about2: '专注于为小米设备（特别是 Redmi Note 12 Turbo / Poco F5）进行自动化的内核编译与定制。',
+            aboutWhat: '我做什么',
+            aboutLi1: 'Android 内核编译与定制',
+            aboutLi2: 'KernelSU / SUSFS / GKI 内核集成',
+            aboutLi3: 'GitHub Actions CI/CD 自动化内核构建',
+            aboutLi4: 'AnyKernel3 刷机包打包 (Magisk/KSU)',
+            aboutInterest: '兴趣方向',
+            interest1: 'Linux 内核源码 (VFS、文件系统)',
+            interest2: 'Android 安全与 Root 方案',
+            interest3: '自动化与 DevOps (GitHub Actions)',
+            aboutConnect: '联系方式',
+            actCreated: '创建了 ',
+            actPushed: '推送至 ',
+            footerSource: '源码',
+            footerQuotes: '名言来自',
+        },
+        'en': {
+            sideTagline: 'Android Kernel Developer',
+            sideLocation: 'Location',
+            sideLocationVal: 'Shenzhen, China',
+            sideTags: 'Tags',
+            sideTimeline: 'Timeline',
+            tlCreated: 'Created zmr1742.github.com',
+            tlMeltFix: 'Melt Kernel workflow fix (SUSFS boot hang)',
+            tlForked: 'Forked android_kernel_xiaomi_marble',
+            tlJoined: 'Joined GitHub',
+            welcome: "Hello, I'm",
+            role: 'Android Kernel',
+            roleSuffix: "Developer & Enthusiast",
+            quoteLoading: 'Loading a random quote...',
+            hitokoto: 'Hitokoto',
+            statRepos: 'Repositories',
+            statForked: 'Forked',
+            statOwn: 'Own Repos',
+            statMainLang: 'Main Language',
+            tabProjects: 'Projects',
+            tabAbout: 'About',
+            tabActivity: 'Activity',
+            secForked: 'Forked Repositories',
+            descMelt: 'Melt Kernel For Redmi Note 12 Turbo / Poco F5 — automated CI builds with SukiSU & SUSFS',
+            descGKI: 'GKI kernel auto-build — integrated KernelSU & SUSFS, multi-Android version support',
+            secOwn: 'Own Repositories',
+            descProfile: "Personal GitHub Pages profile page — you're looking at it right now!",
+            about1: "Hi, I'm <strong>zmr1742</strong>, an Android kernel enthusiast based in Shenzhen, China.",
+            about2: 'I focus on automated kernel compilation and customization for Xiaomi devices, specifically the Redmi Note 12 Turbo / Poco F5 (marble).',
+            aboutWhat: 'What I Do',
+            aboutLi1: 'Android Kernel compilation & customization',
+            aboutLi2: 'KernelSU / SUSFS / GKI kernel integration',
+            aboutLi3: 'GitHub Actions CI/CD automation for kernel building',
+            aboutLi4: 'AnyKernel3 packaging for Magisk/KSU modules',
+            aboutInterest: 'Interests',
+            interest1: 'Linux kernel internals (VFS, filesystems)',
+            interest2: 'Android security & root solutions',
+            interest3: 'Automation & DevOps (GitHub Actions, CI/CD)',
+            aboutConnect: 'Connect',
+            actCreated: 'Created ',
+            actPushed: 'Pushed to ',
+            footerSource: 'Source',
+            footerQuotes: 'Quotes by',
+        }
+    };
+
+    var currentLang = 'zh';
+
     // ─── Theme ───
     (function() {
         var t = document.cookie.match(/theme=([^;]+)/);
         if (t && t[1] === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+        var l = document.cookie.match(/lang=([^;]+)/);
+        if (l && l[1] === 'en') currentLang = 'en';
     })();
 
     function toggleTheme() {
@@ -647,6 +714,28 @@
             document.getElementById('themeToggle').textContent = '☀️';
         }
     }
+
+    // ─── i18n ───
+    function applyLang(lang) {
+        currentLang = lang;
+        document.cookie = 'lang=' + lang + ';path=/;max-age=31536000';
+        document.getElementById('langToggle').textContent = lang === 'zh' ? 'EN' : '中';
+        document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+        var dict = i18n[lang];
+        document.querySelectorAll('[data-i18n]').forEach(function(el) {
+            var key = el.getAttribute('data-i18n');
+            if (dict[key] !== undefined) {
+                el.innerHTML = dict[key];
+            }
+        });
+    }
+
+    function toggleLang() {
+        applyLang(currentLang === 'zh' ? 'en' : 'zh');
+    }
+
+    // Initialize language
+    applyLang(currentLang);
 
     // ─── Tab ───
     function switchTab(name) {
@@ -666,35 +755,44 @@
 
     // ─── Quote via 一言 API ───
     function fetchQuote() {
-        var texts = [
-            { h: 'Stay hungry, stay foolish.', f: 'Steve Jobs' },
-            { h: 'The only way to do great work is to love what you do.', f: 'Steve Jobs' },
-            { h: '活着就是为了改变世界。', f: 'Steve Jobs' },
-            { h: '代码如诗，简洁为上。', f: 'Unknown' },
-            { h: 'Talk is cheap. Show me the code.', f: 'Linus Torvalds' },
-            { h: 'In software, the most beautiful code is the simplest code.', f: 'Unknown' },
-            { h: '做正确的事，等待结果自然发生。', f: 'Unknown' },
-            { h: '不要问你的国家能为你做什么，问问你能为国家做什么。', f: 'John F. Kennedy' },
-            { h: '学而不思则罔，思而不学则殆。', f: '孔子' },
-            { h: '千里之行，始于足下。', f: '老子' },
-        ];
+        var texts = {
+            zh: [
+                { h: 'Stay hungry, stay foolish.', f: 'Steve Jobs' },
+                { h: '活着就是为了改变世界。', f: 'Steve Jobs' },
+                { h: '代码如诗，简洁为上。', f: 'Unknown' },
+                { h: 'Talk is cheap. Show me the code.', f: 'Linus Torvalds' },
+                { h: '做正确的事，等待结果自然发生。', f: 'Unknown' },
+                { h: '学而不思则罔，思而不学则殆。', f: '孔子' },
+                { h: '千里之行，始于足下。', f: '老子' },
+                { h: '实践是检验真理的唯一标准。', f: '邓小平' },
+            ],
+            en: [
+                { h: 'Stay hungry, stay foolish.', f: 'Steve Jobs' },
+                { h: 'The only way to do great work is to love what you do.', f: 'Steve Jobs' },
+                { h: 'Talk is cheap. Show me the code.', f: 'Linus Torvalds' },
+                { h: 'In software, the most beautiful code is the simplest code.', f: 'Unknown' },
+                { h: 'Simplicity is the ultimate sophistication.', f: 'Leonardo da Vinci' },
+                { h: 'If you can\'t explain it simply, you don\'t understand it well enough.', f: 'Albert Einstein' },
+            ]
+        };
         var q = document.getElementById('quoteText');
         var f = document.getElementById('quoteFrom');
-
-        fetch('https://v1.hitokoto.cn/?c=d&c=g&c=i')
+        var langParam = currentLang === 'zh' ? 'c=d&c=g&c=i' : 'c=en';
+        fetch('https://v1.hitokoto.cn/?' + langParam)
             .then(function(r) { return r.json(); })
             .then(function(d) {
                 q.textContent = d.hitokoto;
-                f.textContent = '— ' + (d.from_who || '') + (d.from ? '《' + d.from + '》' : '一言');
+                f.textContent = '— ' + (d.from_who || '') + (d.from ? '《' + d.from + '》' : '');
             })
             .catch(function() {
-                var r = texts[Math.floor(Math.random() * texts.length)];
+                var pool = texts[currentLang] || texts.en;
+                var r = pool[Math.floor(Math.random() * pool.length)];
                 q.textContent = r.h;
                 f.textContent = '— ' + r.f;
             });
     }
     fetchQuote();
-    setInterval(fetchQuote, 120000); // refresh every 2 min
+    setInterval(fetchQuote, 120000);
 </script>
 </body>
 </html>
