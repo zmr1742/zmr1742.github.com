@@ -483,20 +483,31 @@
         var cacheKey = 'bingBgDate';
         var today = new Date().toISOString().slice(0, 10);
         if (localStorage.getItem(cacheKey) !== today) {
-            fetch('https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=zh-CN')
-                .then(function(r) { return r.json(); })
-                .then(function(d) {
-                    var url = 'https://www.bing.com' + d.images[0].url;
-                    // Preload image before applying
-                    var img = new Image();
-                    img.onload = function() {
-                        document.documentElement.style.setProperty('--bg-img', 'url(' + url + ')');
-                        localStorage.setItem('bingBg', url);
-                        localStorage.setItem(cacheKey, today);
-                    };
-                    img.src = url;
-                })
-                .catch(function() {});
+            // Use flow2000/bing-wallpaper-api for random Bing wallpaper
+            var apiUrl = 'https://api.bimg.cc/random?w=1920&h=1080&mkt=zh-CN';
+            var img = new Image();
+            img.onload = function() {
+                document.documentElement.style.setProperty('--bg-img', 'url(' + apiUrl + ')');
+                localStorage.setItem('bingBg', apiUrl);
+                localStorage.setItem(cacheKey, today);
+            };
+            img.onerror = function() {
+                // Fallback: use direct Bing API
+                fetch('https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=zh-CN')
+                    .then(function(r) { return r.json(); })
+                    .then(function(d) {
+                        var fallbackUrl = 'https://www.bing.com' + d.images[0].url;
+                        var fbImg = new Image();
+                        fbImg.onload = function() {
+                            document.documentElement.style.setProperty('--bg-img', 'url(' + fallbackUrl + ')');
+                            localStorage.setItem('bingBg', fallbackUrl);
+                            localStorage.setItem(cacheKey, today);
+                        };
+                        fbImg.src = fallbackUrl;
+                    })
+                    .catch(function() {});
+            };
+            img.src = apiUrl + '&t=' + Date.now();
         }
     })();
 
